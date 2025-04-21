@@ -31,7 +31,7 @@ And without the right tools, **millions of skilled creators remain invisible**.
 
 At its core, the solution is driven by **five collaborative AI agents**, each playing a specific role:
 
-### 1. **Onboarding Guide**  
+### 1. **Onboarding Agent**  
 The first interaction starts with a conversational agent that “speaks” with the user in their preferred language—asking for basic info like product category, materials used, shop name, and any past listings. This ensures a personalized and localized experience from the start.
 
 ### 2. **Visual Insight Agent**  
@@ -40,7 +40,7 @@ Once the user uploads a product photo, this agent analyzes the image to:
 - Gauge the quality, size, texture, and level of craftsmanship  
 - Tag relevant features like color, pattern, and utility  
 
-### 3. **Branding Strategist**  
+### 3. **Branding Agent**  
 This agent generates complete campaign-ready content:
 - A compelling **product name**  
 - A catchy **tagline**  
@@ -50,7 +50,7 @@ It adapts tone and language for different platforms like Meesho, Instagram, Etsy
 ### 4. **Smart Pricing Agent**  
 To determine the right price, this agent scans similar products across the internet—including ecommerce platforms, local seller listings, and platform-specific trends. It balances market rates with craftsmanship to recommend a fair, competitive price.
 
-### 5. **Publishing Partner**  
+### 5. **Publishing Agent**  
 Finally, this agent compiles the output and provides ready-to-paste captions and content for the user's platform of choice. Future iterations will include direct posting integrations.
 
 ---
