@@ -21,8 +21,7 @@ az_model_client = AzureOpenAI(
 )
 
 def image_describing_tool(image_input, mime_type=None):
-    """
-    Accepts either a file path (str) or bytes object for the image.
+    """ Accepts either a file path (str) or bytes object for the image.
     Optionally, provide mime_type (required for bytes; guessed for path).
     Returns structured craft info as dict if successful, else str with error message.
     """

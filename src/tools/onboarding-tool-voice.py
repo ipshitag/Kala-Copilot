@@ -119,7 +119,7 @@ def record_and_trascribe():
 def gather_information():
     conversation_history = []
     ## set up prompt, output parser, LLM
-    with open("onboarding-system-prompt.txt", "r", encoding="utf-8") as file:
+    with open(r"src\tools\prompts\final-output-system-prompt.txt", "r", encoding="utf-8") as file:
         prompt_template = file.read()
     parser = JsonOutputParser(pydantic_object=Response)
     system_prompt = PromptTemplate(
@@ -153,7 +153,7 @@ def gather_information():
 
 def get_final_user_profile():
     conversation_history = get_buffer_string(gather_information())
-    with open("final-output-system-prompt.txt", "r") as file:
+    with open(r"src\tools\prompts\final-output-system-prompt.txt", "r") as file:
         system_prompt_template = file.read()
     parser = JsonOutputParser(pydantic_object=UserProfile)
     final_system_prompt = PromptTemplate(

@@ -9,3 +9,11 @@ python-dotenv
 openai==1.59.7
 pandas
 numpy
+langchain-cohere
+langchain-core
+openai-whisper
+langchain
+gTTS
+pvcobra
+pyaudio
+pydub
