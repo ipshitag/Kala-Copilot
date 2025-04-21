@@ -1,11 +1,12 @@
+<p align="center">
+  <img src="images/KP5.png" alt="Banner" width="100%" style="max-width:600px;" />
+</p>
+
 # कलाCopilot – Kálā Copilot
 > *Kálā* (कला) means "Art" in several Indian languages.  
 > **Kálā Copilot** is an AI-powered assistant that helps artisans and small business owners bring their creations online—one image, one product, one story at a time.  
 >  
 > **Artists create. Kálā Copilot helps them fly.**
-
-![Alt text](images\Kala Copilot Image.png "a title")
-
 ---
 
 ## **1. Problem**
