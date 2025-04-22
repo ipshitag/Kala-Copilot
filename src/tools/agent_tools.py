@@ -20,7 +20,7 @@ az_model_client = AzureOpenAI(
     api_key=api_key,
 )
 
-def image_describing_tool(image_input, mime_type=None):
+def image_describing_tool(image_input, additional_instruction= None, mime_type=None):
     """ Accepts either a file path (str) or bytes object for the image.
     Optionally, provide mime_type (required for bytes; guessed for path).
     Returns structured craft info as dict if successful, else str with error message.
@@ -54,6 +54,36 @@ def image_describing_tool(image_input, mime_type=None):
         return f"Error: failed to base64-encode image ({str(e)})."
 
     # Step 2: Construct chat prompt
+    if additional_instruction:
+        prompt = """Please look at the image and provide a detailed description in the following format:
+                    [JSON START]
+                    {
+                        "description": "A detailed description of the image",
+                        "craft": "The name of the craft (in english for the masses)",
+                        "traditional_name": "The traditional name of the craft eg Sohrai, Pattachitra, Warli, Kalamkari, etc.",
+                        "location": "The location where the craft is made",
+                        "cultural_significance": "The cultural significance of the piece"
+                        "size": "The size of the piece",
+                        "material": "The material used in the piece",
+                    }
+                    [JSON END]
+                    
+                    Additional instruction: {}
+                    """.format(additional_instruction=additional_instruction)
+    else:
+        prompt = """Please look at the image and provide a detailed description in the following format:
+                    [JSON START]
+                    {
+                        "description": "A detailed description of the image",
+                        "craft": "The name of the craft (in english for the masses)",
+                        "traditional_name": "The traditional name of the craft eg Sohrai, Pattachitra, Warli, Kalamkari, etc.",
+                        "location": "The location where the craft is made",
+                        "cultural_significance": "The cultural significance of the piece"
+                        "size": "The size of the piece",
+                        "material": "The material used in the piece",
+                    }
+                    [JSON END]
+                    """
     chat_prompt = [
         {
             "role": "system",
@@ -69,19 +99,7 @@ def image_describing_tool(image_input, mime_type=None):
             "content": [
                 {
                     "type": "text",
-                    "text": """Please look at the image and provide a detailed description in the following format:
-                    [JSON START]
-                    {
-                        "description": "A detailed description of the image",
-                        "craft": "The name of the craft (in english for the masses)",
-                        "traditional_name": "The traditional name of the craft eg Sohrai, Pattachitra, Warli, Kalamkari, etc.",
-                        "location": "The location where the craft is made",
-                        "cultural_significance": "The cultural significance of the piece"
-                        "size": "The size of the piece",
-                        "material": "The material used in the piece",
-                    }
-                    [JSON END]
-                    """
+                    "text": """""".format(prompt)
                 },
                 {
                     "type": "image_url",
@@ -191,7 +209,3 @@ def campaign_generation_tool(information):
         return (data)
     else:
         return ("No JSON found") 
-
-desc = image_describing_tool(r"C:\Users\v-ighosh\Desktop\work pro\Retail-Copilot-Hackathon\src\tools\image2.jpg")
-camp = campaign_generation_tool(desc)
-print(camp)
