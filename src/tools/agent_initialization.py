@@ -40,10 +40,9 @@ visual_insight_functions_toolset.add(visual_insight_functions_tool)
 
 agent = project_client.agents.create_agent(
             model=deployment_name,
-            name="Visual Insights Agent",
+            name="Branding and Marketing Agent",
             instructions=instructions,
-            toolset=visual_insight_functions_toolset,
-            temperature=0.1,
+            # toolset=visual_insight_functions_toolset,
+            temperature=0.5,
             headers={"x-ms-enable-preview": "true"},
         )
-
