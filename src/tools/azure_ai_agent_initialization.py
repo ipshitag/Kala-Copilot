@@ -40,7 +40,7 @@ visual_insight_functions_toolset.add(visual_insight_functions_tool)
 
 agent = project_client.agents.create_agent(
             model=deployment_name,
-            name="Branding and Marketing Agent",
+            name="Visual Insights Agent",
             instructions=instructions,
             # toolset=visual_insight_functions_toolset,
             temperature=0.5,

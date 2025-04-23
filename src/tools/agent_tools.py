@@ -2,6 +2,9 @@ import base64
 from mimetypes import guess_type
 import os  
 import json
+from azure.cosmos import CosmosClient, exceptions
+import uuid
+from datetime import datetime
 import re
 import base64
 from openai import AzureOpenAI  
@@ -12,6 +15,11 @@ azure_deployment = os.environ.get("AZURE_OPENAI_DEPLOYMENT")
 api_version = os.environ.get("AZURE_OPENAI_API_VERSION")
 azure_endpoint = os.environ.get("AZURE_OPENAI_ENDPOINT")
 api_key = os.environ.get("AZURE_OPENAI_KEY")
+cc_endpoint = os.environ.get("COSMOS_DB_ENDPOINT") 
+cc_key = os.environ.get("COSMOS_DB_KEY") 
+cc_client = CosmosClient(cc_endpoint, cc_key)
+# Define database and container names
+cc_database_name = "retail-copilot"
 
 az_model_client = AzureOpenAI(
     azure_deployment=azure_deployment,
@@ -20,11 +28,20 @@ az_model_client = AzureOpenAI(
     api_key=api_key,
 )
 
-def image_describing_tool(image_input, additional_instruction= None, mime_type=None):
-    """ Accepts either a file path (str) or bytes object for the image.
-    Optionally, provide mime_type (required for bytes; guessed for path).
-    Returns structured craft info as dict if successful, else str with error message.
+def image_describing_tool(image_input,mime_type=None):
     """
+    Processes an image file (given as a file path or bytes object), returning structured description information.
+
+    Args:
+        image_input (str or bytes): The image to process. Provide a file path (str) or the image data as bytes.
+        mime_type (str, optional): The MIME type of the image. Required if `image_input` is bytes; 
+                                if a file path is provided, MIME type is inferred automatically.
+
+    Returns:
+        dict: Structured information about the image if processing succeeds.
+        str: Error message if any issue occurs during processing.
+    """
+    
     # Step 1: Load and encode image
     try:
         if isinstance(image_input, str):  # File path
@@ -54,35 +71,9 @@ def image_describing_tool(image_input, additional_instruction= None, mime_type=N
         return f"Error: failed to base64-encode image ({str(e)})."
 
     # Step 2: Construct chat prompt
-    if additional_instruction:
-        prompt = """Please look at the image and provide a detailed description in the following format:
-                    [JSON START]
-                    {
-                        "description": "A detailed description of the image",
-                        "craft": "The name of the craft (in english for the masses)",
-                        "traditional_name": "The traditional name of the craft eg Sohrai, Pattachitra, Warli, Kalamkari, etc.",
-                        "location": "The location where the craft is made",
-                        "cultural_significance": "The cultural significance of the piece"
-                        "size": "The size of the piece",
-                        "material": "The material used in the piece",
-                    }
-                    [JSON END]
-                    
-                    Additional instruction: {}
-                    """.format(additional_instruction=additional_instruction)
-    else:
-        prompt = """Please look at the image and provide a detailed description in the following format:
-                    [JSON START]
-                    {
-                        "description": "A detailed description of the image",
-                        "craft": "The name of the craft (in english for the masses)",
-                        "traditional_name": "The traditional name of the craft eg Sohrai, Pattachitra, Warli, Kalamkari, etc.",
-                        "location": "The location where the craft is made",
-                        "cultural_significance": "The cultural significance of the piece"
-                        "size": "The size of the piece",
-                        "material": "The material used in the piece",
-                    }
-                    [JSON END]
+    prompt = """Please look at the image and provide a detailed description to the last minute details. Make sure to include the following details in the description:
+                    description - A detailed description of the image including traditional_name, size, color, material used in the image.
+                    Provide in a crude way, which will be polished later.
                     """
     chat_prompt = [
         {
@@ -90,7 +81,7 @@ def image_describing_tool(image_input, additional_instruction= None, mime_type=N
             "content": [
                 {
                     "type": "text",
-                    "text": """You are an AI assistant whose task is to describe image as required by the user. <...your full prompt here...>"""
+                    "text": """You are an AI assistant whose task is to describe image as required by the user."""
                 }
             ]
         },
@@ -116,7 +107,7 @@ def image_describing_tool(image_input, additional_instruction= None, mime_type=N
         completion = az_model_client.chat.completions.create(
             model="gpt-4o",
             messages=chat_prompt,
-            max_tokens=800,
+            max_tokens=1200,
             temperature=0.7,
             top_p=0.95,
             frequency_penalty=0,
@@ -127,25 +118,10 @@ def image_describing_tool(image_input, additional_instruction= None, mime_type=N
     except Exception as e:
         return f"Error: Model call failed ({str(e)}). Check network connection and credentials."
 
-    try:
-        response_dict = completion.model_dump()
-        response_message = response_dict["choices"][0]["message"]["content"]
-    except Exception as e:
-        return f"Error: Unexpected model response structure ({str(e)})."
-
-    # Step 4: Extract and parse JSON from response
-    match = re.search(r'\{.*\}', response_message, re.DOTALL)
-    if not match:
-        return "Error: Model response does not contain a JSON block in the expected format."
-    json_str = match.group(0)
-    try:
-        data = json.loads(json_str)
-    except json.JSONDecodeError as e:
-        return f"Error: Failed to parse JSON from model response ({str(e)}). Model output was:\n{json_str}"
-    except Exception as e:
-        return f"Error: Unknown error parsing JSON: {str(e)}"
+    response_dict = completion.model_dump()
+    response_message = response_dict["choices"][0]["message"]["content"]
     
-    return data
+    return response_message
 
 def campaign_generation_tool(information):
     information = str(information)
@@ -209,3 +185,89 @@ def campaign_generation_tool(information):
         return (data)
     else:
         return ("No JSON found") 
+
+def add_product_to_cosmos(
+    product_name: str,
+    user_id:str,
+    product_description: str,
+    price: float,
+    images: list,
+    alt_texts: list,
+    sku: str,
+    category: str,
+    quantity: int,
+    variants: list,
+    barcode: str,
+    marketing_copy: str
+) -> str:
+    """
+    Add a product with all necessary fields to Cosmos DB.
+
+    Parameters:
+    - product_name (str): Product title.
+    - product_description (str): Details of the product.
+    - price (float): Product price.
+    - images (list of str): List of image URLs or paths.
+    - alt_texts (list of str): Alt text for each image.
+    - sku (str): SKU code.
+    - category (str): Product category or type.
+    - quantity (int): Inventory count.
+    - variants (list): List of variants (e.g., [{'size': 'M', 'color': 'Red'}]).
+    - barcode (str): Universal barcode/UPC/EAN.
+    - marketing_copy (str): Short, promotional copy.
+
+    Returns:
+    - str: JSON string with product ID and confirmation message.
+    """
+    # Generate a unique product ID
+    product_id = str(uuid.uuid4())
+
+    cc_container_name = "marketing-copy"
+    database = cc_client.get_database_client(cc_database_name)
+    container = database.get_container_client(cc_container_name)
+
+    item = {
+        "id": product_id,
+        "productName": product_name,
+        "user_id": user_id,
+        "productDescription": product_description,
+        "price": price,
+        "images": images,                    # ["img1.jpg", "img2.jpg"]
+        "altTexts": alt_texts,               # ["Front view", "Side view"]
+        "sku": sku,
+        "category": category,
+        "quantity": quantity,
+        "variants": variants,                # [{"size": "M", "color": "Red"}]
+        "barcode": barcode,
+        "marketingCopy": marketing_copy,
+    }
+
+    container.create_item(body=item)
+    return json.dumps({
+        "productID": product_id,
+        "message": "Product successfully added!"
+    })
+
+def add_users_to_cosmos(
+    user_name: str,
+    user_forte: str,
+    user_id: str,
+) -> str:
+    
+    cc_container_name = "users"
+    database = cc_client.get_database_client(cc_database_name)
+    container = database.get_container_client(cc_container_name)
+
+    item = {
+        "id": user_id,
+        "userName": user_name,
+        "userForte": user_forte,
+    }
+
+    container.create_item(body=item)
+    return json.dumps({
+        "userID": user_id,
+        "message": "Product successfully added!"
+    })
+
+print(image_describing_tool(r'images\image2.jpg'))
