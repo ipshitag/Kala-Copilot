@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/KP5.png" alt="Banner" width="100%" style="max-width:600px;" />
+  <img src="assets\bannerImages\KP5.png" alt="Banner" width="100%" style="max-width:600px;" />
 </p>
 
 # कलाCopilot – Kálā Copilot
