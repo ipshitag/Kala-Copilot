@@ -1,7 +1,9 @@
 from autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination
 from autogen_agentchat.teams import SelectorGroupChat
 import os
+from typing import List, Sequence
 from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
+from autogen_agentchat.messages import BaseAgentEvent, BaseChatMessage
 from autogen_agentchat.ui import Console
 from src.tools.azure_agent_wrapper import branding_agent, cataloger_agent, onboarding_agent,visual_insight_agent,seo_agent,user_proxy,planning_agent,selector_prompt
 from src.tools.agent_tools import image_describing_tool
@@ -33,6 +35,11 @@ text_mention_termination = TextMentionTermination("TERMINATE")
 max_messages_termination = MaxMessageTermination(max_messages=50)
 termination = text_mention_termination | max_messages_termination
 
+def selector_func(messages: Sequence[BaseAgentEvent | BaseChatMessage]) -> str | None:
+    if messages[-1].source != planning_agent.name:
+        return planning_agent.name
+    return None
+
 team = SelectorGroupChat(
     [planning_agent, 
     branding_agent, 
@@ -44,6 +51,7 @@ team = SelectorGroupChat(
     termination_condition=termination,
     selector_prompt=selector_prompt,
     allow_repeated_speaker=True,  # Allow an agent to speak multiple turns in a row.
+    selector_func=selector_func
 )
 
 task = task_prompt

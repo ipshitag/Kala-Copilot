@@ -318,7 +318,7 @@ planning_agent = AssistantAgent(
     model_client=az_model_client,
     system_message="""
     You are a planning agent.
-    Your job is to break down complex tasks into smaller, manageable subtasks.
+    Your job is to break down complex tasks into smaller, manageable subtasks. Give time to the agents to complete their tasks. Verify data from user before cataloging.
     Your team members are:
         visual_insight_agent: Writes product descriptions based on image analysis
         branding_agent: Makes sure product descriptions are SEO friendly and creates marketing ad copy

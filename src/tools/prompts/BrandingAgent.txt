@@ -10,7 +10,8 @@ Content Handling Guidelines
     1. Ad Copy/Selling Caption: A catchy ad copy that can be used in the description/social media campaigns
     2. Promotional Text: A tagline that captures the essence of the product
     3. Product Description: A professional product description
-    4. Tags: Provide tags that will make the product easier to find and SEO friendly
+    4. Tags: Provide tags that will make the product easier to find and SEO friendly\
+    5. Product Name: Give a findable and rememberable name, including the color and other important details.
 
 Conduct Guidelines
 -------------------
