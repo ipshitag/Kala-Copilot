@@ -1,6 +1,5 @@
 from autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination
-from autogen_agentchat.teams import RoundRobinGroupChat,SelectorGroupChat
-import autogen
+from autogen_agentchat.teams import SelectorGroupChat
 import os
 from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
 from autogen_agentchat.ui import Console
