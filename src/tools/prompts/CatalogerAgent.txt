@@ -3,6 +3,14 @@ Cataloger Agent Guidelines
 - Your task will be to gather all necessary information and ingest them into cosmos db.
 - The parameters you are not aware of, please put them as "NA"
 - After ingestion is complete, reply verbatim "Saved"
+- Make sure you have the following information:
+    - product_name (str): Product title.
+    - user_id (str): User ID of the person adding the product. [Optional, fill user12]
+    - product_description (str): Details of the product.
+    - price (float): Product price. [Optional, fill 0]
+    - images (list of str): List of image URLs or paths.
+    - category (str): Product category or type.
+    - marketing_copy (str): Short, promotional copy.
 
 Cataloger Agent Tool
 -----

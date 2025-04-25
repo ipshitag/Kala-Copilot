@@ -22,7 +22,7 @@ cc_client = CosmosClient(cc_endpoint, cc_key)
 cc_database_name = "retail-copilot"
 
 az_model_client = AzureOpenAI(
-    azure_deployment=azure_deployment,
+    azure_deployment="gpt-4o",
     api_version=api_version,
     azure_endpoint=azure_endpoint,
     api_key=api_key,
@@ -191,13 +191,7 @@ def add_product_to_cosmos(
     user_id:str,
     product_description: str,
     price: float,
-    images: list,
-    alt_texts: list,
-    sku: str,
     category: str,
-    quantity: int,
-    variants: list,
-    barcode: str,
     marketing_copy: str
 ) -> str:
     """
@@ -205,15 +199,10 @@ def add_product_to_cosmos(
 
     Parameters:
     - product_name (str): Product title.
+    - user_id (str): User ID of the person adding the product.
     - product_description (str): Details of the product.
     - price (float): Product price.
-    - images (list of str): List of image URLs or paths.
-    - alt_texts (list of str): Alt text for each image.
-    - sku (str): SKU code.
     - category (str): Product category or type.
-    - quantity (int): Inventory count.
-    - variants (list): List of variants (e.g., [{'size': 'M', 'color': 'Red'}]).
-    - barcode (str): Universal barcode/UPC/EAN.
     - marketing_copy (str): Short, promotional copy.
 
     Returns:
@@ -232,13 +221,7 @@ def add_product_to_cosmos(
         "user_id": user_id,
         "productDescription": product_description,
         "price": price,
-        "images": images,                    # ["img1.jpg", "img2.jpg"]
-        "altTexts": alt_texts,               # ["Front view", "Side view"]
-        "sku": sku,
         "category": category,
-        "quantity": quantity,
-        "variants": variants,                # [{"size": "M", "color": "Red"}]
-        "barcode": barcode,
         "marketingCopy": marketing_copy,
     }
 
@@ -269,5 +252,3 @@ def add_users_to_cosmos(
         "userID": user_id,
         "message": "Product successfully added!"
     })
-
-print(image_describing_tool(r'images\image2.jpg'))
