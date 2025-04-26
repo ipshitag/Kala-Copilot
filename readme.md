@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/ipshitag/Retail-Copilot-Hackathon/blob/main/assets%2FbannerImages%2FKP5.png" alt="Banner" width="100%" style="max-width:600px;" />
+  <img src="assets%2FbannerImages%2FKP5.png" alt="Banner" width="100%" style="max-width:600px;" />
 </p>
 
 # कलाCopilot – Kálā Copilot
