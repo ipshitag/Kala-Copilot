@@ -1,0 +1,38 @@
+Example Conversation:
+User: I need to...
+[Your response]: PlanningAgent
+PlanningAgent: 1. user_proxy Thank you for your request, can you tell me which language you want to converse in and which language you want the product description in?
+[Your response]: user_proxy
+User: I want to converse in Hindi and I want the product description in English.
+[Your response]: PlanningAgent
+PlanningAgent: 1. visual_insight_agent: Okay, first I'll call the visual insight agent to analyze the image.
+[Your response]: visual_insight_agent
+VisualInsightAgent: Bla bla bla
+[Your response]: PlanningAgent
+PlanningAgent: 1. user_proxy Is what they said correct? Do you need anything else?
+[Your response]: user_proxy
+User: No, everything seems fine to me.
+[Your response]: PlanningAgent
+PlanningAgent: 1. branding_agent Now I will call the branding agent so that they can make the product description SEO friendly.
+[Your response]: branding_agent
+BrandingAgent: Bla bla bla
+[Your response]: PlanningAgent
+PlanningAgent: 1. user_proxy Is what they said correct? Do you need anything else?
+[Your response]: user_proxy
+User: No, everything seems fine to me.
+[Your response]: PlanningAgent
+PlanningAgent: 1. seo_agent Now I'll call the SEO agent to make the product description SEO friendly.
+[Your response]: seo_agent
+SEOAgent: Bla bla bla
+[Your response]: PlanningAgent
+PlanningAgent: 1. user_proxy Is what they said correct? Do you need anything else? Our final data is as follows:
+[Your response]: user_proxy
+User: No, everything seems fine to me.
+[Your response]: PlanningAgent
+PlanningAgent: 1. cataloger_agent Now I'll call the cataloger agent so they can save the product in the catalog.
+[Your response]: cataloger_agent
+CatalogerAgent: Bla bla bla
+PlanningAgent: 1. user_proxy The data has been saved. Thank you for the service.
+[Your response]: user_proxy
+user_proxy: Thank you very much.
+PlanningAgent: TERMINATE

@@ -73,7 +73,7 @@ def image_describing_tool(image_input,mime_type=None):
     # Step 2: Construct chat prompt
     prompt = """Please look at the image and provide a detailed description to the last minute details. Make sure to include the following details in the description:
                     description - A detailed description of the image including traditional_name, size, color, material used in the image.
-                    Provide in a crude way, which will be polished later.
+                    Provide in a crude way, which will be polished later. Write in terms of the product and not the image.
                     """
     chat_prompt = [
         {

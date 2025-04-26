@@ -1,13 +1,10 @@
-from autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination
-from autogen_agentchat.teams import SelectorGroupChat
 import os
-from typing import List, Sequence
+import asyncio
 from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
-from autogen_agentchat.messages import BaseAgentEvent, BaseChatMessage
-from autogen_agentchat.ui import Console
 from src.tools.azure_agent_wrapper import branding_agent, cataloger_agent, onboarding_agent,visual_insight_agent,seo_agent,user_proxy,planning_agent,selector_prompt
 from src.tools.agent_tools import image_describing_tool
 from utils.llm_config import config_list
+import asyncio
 
 az_model_client = AzureOpenAIChatCompletionClient(
     azure_deployment="gpt-4o",
@@ -19,46 +16,53 @@ az_model_client = AzureOpenAIChatCompletionClient(
 
 llm_config = {"config_list": config_list, "seed": 52}
 
-file = r'images\image2.jpg'
+file = r'images\image1.jpg'
 image_description = image_describing_tool(file)
-task_prompt = (
-    "I need to have the marketing copy for a product, please follow these steps to create the copy:\n\n"
-    "1. Visually Analyze the image description: {}'\n"
-    "2. Create marketing and other related product description'\n"
-    "3. Make sure the descriptions and other information is SEO friendly'\n"
-    "4. Save the product in catalog'\n\n"
-    "Using the gathered information, collaboratively write a compelling marketing ad copy"
-    "Once the content is finalized, save it.".format(image_description)
+
+async def run_agent(agent, task_template, message_source, input_text):
+    task = task_template.format(input_text)
+    result = await agent.run(task=task)
+    for message in result.messages:
+        if getattr(message, "source", None) == message_source:
+            return message.content
+
+visual_task_template = "Create a polished and stunning description of, treat the image as a product: {}"
+marketing_task_template = "Based on the following product description, create a marketing ad copy of the product: {}"
+seo_agent_task_template = "Create a SEO optimized product description for the following marketing copy: {}"
+cataloger_agent_task_template = "Create a product catalog entry for the following marketing copy: {}"
+
+visual_agent_result = asyncio.run(
+    run_agent(
+        agent=visual_insight_agent,
+        task_template=visual_task_template,
+        message_source="visual_insight_agent",
+        input_text=image_description
+    )
 )
 
-text_mention_termination = TextMentionTermination("TERMINATE")
-max_messages_termination = MaxMessageTermination(max_messages=50)
-termination = text_mention_termination | max_messages_termination
-
-def selector_func(messages: Sequence[BaseAgentEvent | BaseChatMessage]) -> str | None:
-    if messages[-1].source != planning_agent.name:
-        return planning_agent.name
-    return None
-
-team = SelectorGroupChat(
-    [planning_agent, 
-    branding_agent, 
-    cataloger_agent,
-    visual_insight_agent,
-    seo_agent,
-    user_proxy],
-    model_client=az_model_client,
-    termination_condition=termination,
-    selector_prompt=selector_prompt,
-    allow_repeated_speaker=True,  # Allow an agent to speak multiple turns in a row.
-    selector_func=selector_func
+branding_agent_result = asyncio.run(
+    run_agent(
+        agent=branding_agent,
+        task_template=marketing_task_template,
+        message_source="branding_agent",
+        input_text=visual_agent_result
+    )
 )
 
-task = task_prompt
+seo_agent_result = asyncio.run(
+    run_agent(
+        agent=seo_agent,
+        task_template=seo_agent_task_template,
+        message_source="seo_agent",
+        input_text=branding_agent_result
+    )
+)
 
-import asyncio
-
-async def main():
-    await Console(team.run_stream(task=task))
-
-asyncio.run(main())
+cataloger_agent_result = asyncio.run(
+    run_agent(
+        agent=cataloger_agent,
+        task_template=cataloger_agent_task_template,
+        message_source="cataloger_agent",
+        input_text=seo_agent_result
+    )
+)
