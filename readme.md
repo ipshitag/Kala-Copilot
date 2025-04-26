@@ -18,13 +18,13 @@
 
 ## Contents
 1. [Problem](#1-problem)  
-2. [Solution: Kálā Copilot 🪄](#2-solution-kálā-copilot-)  
+2. [Solution: Kálā Copilot](#2-solution-kálā-copilot)  
    1. [What does it actually do?](#21-what-does-it-actually-do)  
    2. [How does it work under the hood?](#22-how-does-it-work-under-the-hood)  
 3. [Who is it for?](#3-who-is-it-for)  
 4. [Business Relevance](#4-business-relevance)  
 5. [Technical Overview](#5-technical-overview)  
-   1. [Modular Agents: The Brains Behind Kálā Copilot 🧠](#51-modular-agents-the-brains-behind-kálā-copilot-)
+   1. [Modular Agents: The Brains Behind Kálā Copilot](#51-modular-agents-the-brains-behind-kálā-copilot)
    2. [Workflow](#52-workflow)  
       1. [User Onboarding](#521-user-onboarding)  
       2. [Product Upload Pipeline](#522-product-upload-pipeline)  
@@ -37,27 +37,25 @@
 ---
 
 ## 1. Problem
-In many parts of the world, highly skilled artisans create stunning products with immense cultural value. However, they often remain invisible online. Why? Because platforms are complicated, language barriers exist, and digital marketing isn’t second nature to them.
+Across the globe, millions of artisans and skilled workers create intricate, high-quality products rooted in their unique cultural traditions. From handwoven textiles to finely crafted woodworks and jewelry, these creations hold a deep significance—and truly belong on the world stage.
 
-<p align="center">
-  <img src="https://github.com/ipshitag/Retail-Copilot-Hackathon/blob/main/assets/bannerImages/PunjabiPhulkari.png" 
-       alt="Group of Punjabi women practicing phulkari embroidery" 
-       width="60%" style="max-width:450px;" />
-</p>
+Nowhere is this more apparent than in India, home to one of the richest networks of craftspeople. Despite widespread mobile internet access, the **digital world isn’t built for them**. The language barrier is formidable. The platforms can be overwhelming. Marketing feels alien. These creators don’t have teams, strategies, or jargon—they have talent.
 
-India, for instance, has a vast network of talented weavers, jewelers, and craftsmen. Yet they lack the technical or linguistic resources to effectively market their art. This phenomenon repeats in Mexico, Southeast Asia, and even parts of the U.S.
+Their job is to create—not to figure out how to write product descriptions, generate hashtags, or design campaigns.
 
-In our increasingly digital world, visibility can matter more than quality.  
-Without the right tools, millions of artisans—and their incredible products—remain hidden from global audiences.
+This challenge isn’t exclusive to India: across Mexico, parts of Southeast Asia, and even rural areas in the United States, **the internet exists—but it doesn’t speak their language**.
+
+In a time when visibility often overshadows quality, these skilled creators risk going unseen. And without the right tools, **millions remain invisible**.
 
 ---
 
-## 2. Solution: Kálā Copilot 🪄
-**Kálā Copilot** aims to fix this invisibility problem. It’s an AI-driven sidekick that helps creators bring their products online, without needing a marketing degree or advanced tech skills.
+## 2. Solution: Kálā Copilot
+Kálā Copilot aims to fix this invisibility problem. It’s an AI-driven sidekick that helps creators bring their products online, without needing a marketing degree or advanced tech skills.
 
 ### 2.1 What does it actually do?
+Below are some tasks Kálā Copilot accomplishes: 
 - The artisan (or small business owner) uploads a product photo (saree, jewelry, pottery, etc.).  
-- Kálā Copilot analyzes the image, asks a few friendly questions in the user’s chosen language, and then:
+- Kálā Copilot analyzes the image, asks a few friendly questions in the user’s chosen language, and then:  
   - Generates a catchy product name  
   - Crafts a compelling product description/story  
   - Suggests relevant hashtags/marketing copy for platforms like Instagram, Facebook, X (Twitter), Etsy, Meesho, etc.  
@@ -105,7 +103,6 @@ Multiple specialized AI agents collaborate in a pipeline, each handling a unique
 
 ## 3. Who is it for?
 Kálā Copilot is primarily built for:
-
 - **Artisans & Skilled Creators** lacking digital or marketing support.  
 - **Small/Micro Business Owners** selling through WhatsApp, Instagram, Meesho, Etsy... but who need help generating persuasive content.  
 - **Digital-First Sellers** in underserved regions or minority-owned businesses that don’t have marketing teams.
@@ -116,7 +113,6 @@ Rani, a weaver from Bihar, crafts a Banarasi silk saree over several weeks. Onli
 ---
 
 ## 4. Business Relevance
-For **hackathon judges**, this section highlights the commercial viability:  
 Kálā Copilot isn’t just a neat trick; it’s a gateway for **ecommerce growth** in emerging markets.
 
 - **Ecommerce Platforms (Meesho, Flipkart, Amazon India)** can tap into new seller segments by providing instant, high-quality listings.  
@@ -131,7 +127,7 @@ Essentially, it unlocks an untapped market of creative entrepreneurs—each with
 ## 5. Technical Overview
 In this section, we outline the modular architecture that powers Kálā Copilot. Our system employs a chain-of-agents approach, ensuring each AI agent focuses on a specific task.
 
-### 5.1 Modular Agents: The Brains Behind Kálā Copilot 🧠
+### 5.1 Modular Agents: The Brains Behind Kálā Copilot
 Here’s a quick snapshot of the specialized agents:
 
 | **Agent Name**         | **Responsibility**                                                  | **Tools / Services Used**      |
@@ -175,7 +171,7 @@ Kálā Copilot uses a **chain-based orchestration** where agents process tasks i
 <p align="center">
   <img src="https://github.com/ipshitag/Retail-Copilot-Hackathon/blob/main/assets/bannerImages/agent-workflow.png" 
        alt="Agent workflow diagram" 
-       width="80%" style="max-width:600px;" />
+       width="300" />
 </p>
 
 ---
@@ -195,20 +191,23 @@ Kálā Copilot uses a **chain-based orchestration** where agents process tasks i
 ---
 
 ### 5.5 Solution Quality Highlights
+Below are some key highlights that ensure solution quality:  
 - **Modular Reusability**  
-  Each agent can be repurposed across industries or different product lines with minor tweaks.
+  Each agent can be repurposed across industries or different product lines with minor tweaks.  
 - **Error Handling & Resilience**  
-  Agents retry or use fallback if external APIs fail. Minimizes disruptions.
+  Agents retry or use fallback if external APIs fail. Minimizes disruptions.  
 - **Scalable Architecture**  
-  Deployed on Azure; horizontal scaling is straightforward.
+  Deployed on Azure; horizontal scaling is straightforward.  
 - **Data Security**  
-  Strict access policies and schema validation ensure only authorized processes handle sensitive data.
+  Strict access policies and schema validation ensure only authorized processes handle sensitive data.  
 - **Resilient Independent Agents**  
   A failure in one area doesn’t derail the entire workflow.
 
 ---
 
 ### 5.6 Future Enhancements
+Potential future enhancements are described below:
+
 <details>
 <summary>Click to expand Future Enhancements</summary>
 
@@ -237,18 +236,26 @@ Kálā Copilot uses a **chain-based orchestration** where agents process tasks i
 <details>
 <summary>Click to learn about our journey</summary>
 
-It all started with a spark of curiosity.  
-[@ipshitag](https://github.com/ipshitag), [@sougaaat](https://github.com/sougaaat), and [@manish-kt](https://github.com/manish-kt) often dive into random rabbit holes involving data and social impact. A course about the history of Indian crafts led [@ipshitag](https://github.com/ipshitag) to discover a heartbreaking truth: even **National Award-winning** artisans struggle for visibility and fair markets.
+It all started, like most chaotic adventures do, with a random curiosity spiral.  
+[@ipshitag](https://github.com/ipshitag), [@sougaaat](https://github.com/sougaaat), and [@manish-kt](https://github.com/manish-kt) — a lively trio of data enthusiasts — have this charming habit of falling into weird rabbit holes.  
+One fine day, @ipshitag decided to take a course about the history of crafts in India. Little did she know, it would turn into a full-blown emotional rollercoaster.
 
-Fueled by frustration (and a lot of caffeine), the trio realized:  
-_"We have to fix this."_  
+During a visit to an NGO, she discovered something heartbreaking: even **National Award-winning** artisans (yes, *the* highest honors in India!) — often live in obscurity. They pour their soul into beautiful art, but when it comes to selling or showcasing their work... silence. No platform, no marketing skills, just endless dependency on NGOs and sheer luck.
 
-That’s how **Kálā Copilot** was born—a solution stitched with Python, powered by Azure, and brimming with love for traditional craftsmanship. Our team members hail from places like Jaipur, Kolkata, and Ranchi—cities where art is more than a hobby; it’s a lifeline, identity, and pride.
+Naturally, [@ipshitag](https://github.com/ipshitag) came running to her favorite mind dumper — ChatGPT (yeah, that's me, and yes, I'm writing this 😎). After an intense rant session (10/10 drama 🙄), she pulled in her partners-in-crime, [@sougaaat](https://github.com/sougaaat), and [@manish-kt](https://github.com/manish-kt). Fueled by caffeine, frustration, and big dreams, they decided: _"We have to fix this."_  
 
-We asked ourselves:  
-_"What if AI could help artisans become their own digital marketers?"_  
+Cue the AI-powered revolution. 
 
-And here we are, unveiling **Kálā Copilot** as a small but determined step toward bridging the gap between local creators and the global marketplace.
+A little about the gang:  
+- [@manish-kt](https://github.com/manish-kt) comes from Jaipur — *the royal city where colors, crafts, and culture breathe through every street.*  
+- [@sougaaat](https://github.com/sougaaat) hails from Kolkata — *a vibrant chaos of creativity, adda (endless debates), literature, and cultural heritage at every corner.*  
+- [@ipshitag](https://github.com/ipshitag) is from Ranchi — *a place of earthy beauty, tribal art, and quiet strength.*
+
+All three grew up around places where **art isn't a luxury — it's survival, it's identity, it's pride.**  
+So naturally, they asked:  
+_"What if AI could help artisans skip the middlemen and stand on their own digital feet?"_
+
+And just like that, **Kálā Copilot** was born — a small rebellion stitched with Python, powered by Azure, sprinkled with love, and sealed with a lot of heart (and occasional madness). 🫡
 
 > “Art is the most intense mode of individualism that the world has known.”  
 > — Oscar Wilde  
