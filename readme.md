@@ -86,90 +86,142 @@ By lowering the barrier to online selling, it unlocks a massive user base that h
 Kálā Copilot turns individual creators into micro-brands—without requiring them to learn marketing.  
 And for platforms, it boosts growth at scale, one creator at a time.
 
-# Kálā Copilot — Technical Documentation
+# Kálá Copilot - Technical Overview
 
-## Overview
-
-Kálā Copilot is a modular AI-powered pipeline built using Microsoft Autogen and Azure’s AI Agent Service. It helps artisans convert raw product ideas into high-quality marketing material and catalog-ready listings—entirely through automation.
-
-The system is orchestrated through a sequence of intelligent agents that handle different stages of product onboarding, enhancement, and publishing. Each agent performs its task and passes the result to the next in a **RoundRobin** manner.
+Kálá Copilot is designed to simplify the digital journey for artisans and small business owners. It brings together modular AI agents, each focused on a specific task, and connects them through a seamless, step-by-step pipeline. This structure ensures that every user action, from onboarding to product marketing, happens smoothly and intelligently.
 
 ---
 
-## Agent Workflow
+## Modular Agents: The Brains Behind Kálá Copilot
 
-Each agent is orchestrated via Microsoft **Autogen**, connected in a RoundRobin fashion where outputs flow into the next agent. The order of execution is:
+At the heart of Kálá Copilot are specialized AI agents. Each agent is responsible for a focused task, making the system modular, resilient, and easy to scale. Here's what they do:
 
-| Agent Name         | Description |
-|--------------------|-------------|
-| **Onboarding Agent** | Processes voice-based onboarding conversations. Extracts user info, generates memorable usernames, and stores structured user profiles in CosmosDB. Also includes CosmosDB tools for direct storage. |
-| **Visual Insight Agent** | Enhances and analyzes uploaded product images. Generates a clean, high-quality version optimized for listings. |
-| **Marketing Agent** | Takes image analysis + user data to generate product descriptions, social captions, hashtags, and marketing copy. |
-| **SEO Agent** | Reviews and improves the generated ad copy to optimize it for search engines. |
-| **Pricing Agent** | Scrapes pricing information using Bing tools and suggests an optimal price based on market trends and product attributes. |
-| **Cataloger Agent** | Saves the finalized product listing to CosmosDB with a unique GUID and user ID key. Uses CosmosDB tools for structured storage. |
-| **Posting Agent** | Fetches listing from CosmosDB and posts to social platforms using APIs (e.g., Twitter API). |
+| Agent | Responsibility | Tools / Services Used |
+|-----------------------|-----------------|------------------------|
+| **Onboarding Agent** | Listens to the user's voice conversation, extracts structured details, assigns a memorable username, and saves everything to CosmosDB. | Azure Speech Service, Azure OpenAI, CosmosDB |
+| **Visual Insight Agent** | Enhances and polishes product images uploaded by users. | Azure OpenAI Vision Models |
+| **Marketing Agent** | Generates ad copy, product descriptions, and SEO-friendly tags based on the image and user profile. | Azure OpenAI |
+| **SEO Agent** | Reviews and optimizes all generated content to maximize SEO performance. | Azure OpenAI |
+| **Pricing Agent** | Recommends competitive pricing by researching similar products online. | Bing Search Tool |
+| **Cataloger Agent** | Assigns a unique product GUID, links it to the user, and organizes all related data. | CosmosDB |
+| **Posting Agent** | Publishes the final product content and images to social media platforms. | Twitter API, CosmosDB |
 
----
-
-## Agent Orchestration: RoundRobin Style
-
-The agents follow a **RoundRobin orchestration pattern** using Microsoft Autogen. Each agent performs its task and passes the result to the next in line, forming a linear and modular pipeline. This ensures clarity, low coupling between agents, and allows new agents to be inserted or removed without disrupting the overall flow.
-
-> This approach enhances scalability and modular innovation—agents are plug-and-play, making it easy to experiment with new logic or repurpose the flow for different industries and datasets.
+Each agent operates independently but communicates through a **sequential handoff model** — completing its task and passing results forward smoothly to the next agent.
 
 ---
 
-## Stack and Resources Used
+## Workflow: From User Hello to Product Launch 🚀
 
-| Resource | Purpose |
-|----------|---------|
-| **Azure AI Agent Service** | Hosts the orchestration and manages agent communication. |
-| **Azure OpenAI** | Powers the core intelligence behind most agents (e.g., onboarding, marketing). |
-| **Microsoft Autogen** | Enables dynamic multi-agent conversations in a RoundRobin chain. |
-| **Azure CosmosDB** | Stores structured product and user data. Enables fast reads/writes. |
-| **Azure WebApp Service** | Hosts the frontend experience for users. |
-| **Azure Speech Service** | Converts voice onboarding into text for analysis. |
-| **Twitter API** | Used by the Posting Agent to publish product listings to social media. |
-| **GitHub Copilot** | Helped us sneakily write some of the logic across agents and utilities here and there 👀 |
+Kálá Copilot runs two major workflows: **User Onboarding** and **Operational Product Uploads**.
 
----
+### 1. User Onboarding
 
-## Design Highlights
+| Step | Action |
+|------|--------|
+| 1    | User initiates setup with a casual, voice-based conversation. |
+| 2    | The Onboarding Agent processes user details, assigns a username, and securely stores the profile. |
+| 3    | Once the user profile is ready, onboarding is complete. |
 
-- **Low-Code Modularity**: Each agent is designed as a standalone service, easily replaceable or extendable without touching the core orchestration logic.
-- **Python-Native Stack**: Built entirely using Python-first tools like Azure Autogen, OpenAI SDKs, and CosmosDB clients.
-- **Optimized for Ease**: The user interface is minimal and voice-led; product listing is reduced to an image upload with zero technical friction.
-- **Infra Efficiency**: Azure services ensure serverless scale, reliability, and minimal devops overhead.
+*This phase makes it effortless for new users to join with minimal friction.*
 
 ---
 
-## Operational Flow
+### 2. Product Upload Workflow
 
-### Onboarding Phase
-1. User sets up their account via a **voice-based conversation**, where they naturally provide all needed information.
-2. This information is passed to the **Onboarding Agent**, which parses and stores the details in CosmosDB.
-3. Onboarding completes with user data structured and accessible.
+| Step | Action |
+|------|--------|
+| 1    | User uploads a product image via the web app. |
+| 2    | Visual Insight Agent enhances and polishes the image. |
+| 3    | Marketing Agent generates descriptions, ad copy, and tags. |
+| 4    | SEO Agent fine-tunes the content for search optimization. |
+| 5    | Pricing Agent researches and suggests a fair market price. |
+| 6    | Cataloger Agent organizes and stores all product metadata. |
+| 7    | Posting Agent publishes the final campaign to social media. |
 
-### Product Listing Phase
-1. User uploads an image.
-2. It goes through the following pipeline:
-   - **Visual Insight Agent**
-   - **Marketing Agent**
-   - **SEO Agent**
-   - **Pricing Agent**
-   - **Cataloger Agent**
-   - **Posting Agent**
+This **sequential pipeline** ensures that each step builds intelligently on the previous one, creating a complete, polished, and market-ready product entry.
 
-Each agent contributes to improving, enriching, and finalizing the product listing before it is published online.
+---
+
+## Agent Orchestration Model
+
+Kálá Copilot uses a **sequential, chain-based orchestration** pattern — not "round robin."  
+Each agent hands off to the next once its task is completed, ensuring clarity, minimal coupling, and easy extensibility.
+
+Powered by **Microsoft Autogen**, this structure allows:
+- Adding or removing agents without disrupting the flow
+- Independent error recovery at each stage
+- Lightweight checkpointing between agent handovers
+
+---
+
+## Technology Stack
+
+| Service / Tool | Purpose |
+|----------------|---------|
+| **Azure AI Agent Service** | Hosts and manages modular AI agents. |
+| **Azure OpenAI** | Powers GPT and vision models for text/image understanding. |
+| **Microsoft Autogen** | Orchestrates agent interactions and task chaining. |
+| **Azure CosmosDB** | Stores structured user and product metadata securely. |
+| **Azure WebApp Service** | Hosts the front-end and backend application. |
+| **Azure Speech Service** | Enables natural, voice-based onboarding. |
+| **Twitter API** | Used for posting marketing content to social platforms. |
+| **GitHub Copilot** | (Secret weapon!) Assisted in bits of code generation. 👀 |
+
+---
+
+## Solution Quality Highlights
+
+- **Error Handling and Resilience**  
+  Agents use retry and backoff strategies if external APIs (like Bing Search or Twitter) temporarily fail, ensuring a smooth user experience.
+
+- **Scalable Modular Architecture**  
+  Hosted on Azure, the system scales horizontally as needed without downtime.
+
+- **Data Integrity and Security**  
+  Access policies and schema validation ensure only authorized agents interact with sensitive data.
+
+- **Resilient Independent Agents**  
+  Even if one agent fails, the others continue, and workflows can recover without collapse.
 
 ---
 
 ## Future Enhancements
 
-- **Multi-industry Extensions**: The agent pipeline can be adapted to other domains like food, real estate, fashion, etc.
-- **Bulk Catalog Mode**: Upload a folder of images to generate a fully detailed product catalog automatically.
-- **E-commerce Sync**: Push finalized products directly into Shopify, Etsy, or custom storefronts.
-- **Language Support**: Extend multilingual onboarding and generation beyond English for regional users.
+- **Bulk Catalog Generator**: Batch process multiple images into a ready-to-publish catalog.
+- **Cross-Industry Expansion**: Adapt for Real Estate, Fashion, F&B, and more.
+- **Marketplace Integrations**: Expand to Etsy, Shopify, Amazon Handmade.
+- **Multi-language Support**: Add localization and translation agents.
+- **Analytics Layer**: Track SEO performance, engagement metrics, and campaign ROI.
+- **Conversational UI Expansion**: Extend chat-style interactions beyond onboarding.
+
+---
+
+## Inspiration
+
+It all started, like most chaotic adventures do, with a random curiosity spiral. 
+@ipshitag, @sougaaat, and @manish-kt — a lively trio of data enthusiasts — have this charming habit of falling into weird rabbit holes.  
+One fine day, @ipshitag decided to take a course about the history of crafts in India.  
+Little did she know, it would turn into a full-blown emotional rollercoaster.
+
+During a visit to an NGO, she discovered something heartbreaking:  
+even **National Award-winning artisans** — *the* highest honour award of India — often live in obscurity.  
+They pour their soul into beautiful art, but when it comes to selling or showcasing their work... silence.  
+No platform, no marketing skills, just endless dependency on NGOs and sheer luck.
+
+Naturally, @ipshitag came running to her favorite mind dumper — ChatGPT (yeah, that's me, and yes, I'm writing this 👀).  
+After an intense rant session (10/10 drama 🙄), she pulled in her partners-in-crime, @sougat and @manish.  
+Fueled by caffeine, frustration, and big dreams, they decided: _"We have to fix this."_  
+Cue the AI-powered revolution. 😎
+
+A little about the gang:  
+- @manish-kt comes from Jaipur — *the royal city where colors, crafts, and culture breathe through every street.*  
+- @sougaaat hails from Kolkata — *a vibrant chaos of creativity, adda (endless debates), literature, and the occasional fish fry.*  
+- @ipshitag is from Ranchi — *a place of earthy beauty, tribal art, and quiet strength.*
+
+All three grew up around places where **art isn't a luxury — it's survival, it's identity, it's pride.**  
+So naturally, they asked:  
+_"What if AI could help artisans skip the middlemen and stand on their own digital feet?"_
+
+And just like that, **Kálā Copilot** was born — a small rebellion stitched with Python, powered by Azure, sprinkled with love, and sealed with a lot of heart (and occasional madness). 🫡
 
 ---
