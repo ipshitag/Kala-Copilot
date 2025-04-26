@@ -18,9 +18,8 @@
    1. [What does it actually do?](#21-what-does-it-actually-do)  
    2. [How does it work under the hood?](#22-how-does-it-work-under-the-hood)  
 3. [Who is it for?](#3-who-is-it-for)  
-4. [Business Relevance](#4-business-relevance)  
-   1. [Why it matters](#41-why-it-matters)  
-5. [Technical Overview](#5-technical-overview)  
+4. [Business Relevance](#4-business-relevance)   
+5. [Technical Overview](#5. Technical Overview)  
    1. [Modular Agents: The Brains Behind Kálá Copilot 🧠](#51-modular-agents-the-brains-behind-kálá-copilot-)
    2. [Workflow](#52-workflow)  
       1. [User Onboarding](#521-user-onboarding)  
@@ -37,15 +36,15 @@
 
 India has one of the richest networks of artisans and skilled workers—people who create beautiful, high-quality products with deep cultural value. From handwoven fabrics to woodcraft and jewelry, their creations deserve global visibility.
 
-And while mobile internet is available, the digital world isn’t built for them. The language barrier is real. The platforms are overwhelming. The marketing game is unfamiliar. These creators don’t have teams, strategies, or jargon. They have talent.
+And while mobile internet is widely available across India, the **digital world isn’t built for them**. The language barrier is real. The platforms are overwhelming. The marketing game is unfamiliar. These creators don’t have teams, strategies, or jargon. They have talent.
 
 Their job is to create—not to figure out how to write product descriptions, generate hashtags, or design campaigns.
 
 This isn’t just India. Across Mexico, Southeast Asia, and even rural parts of the US, millions of creators face the same challenge:  
-the internet exists—but it doesn’t speak their language.
+**the internet exists—but it doesn’t speak their language.**
 
 In today’s world, visibility often matters more than quality.  
-And without the right tools, millions of skilled creators remain invisible.
+And without the right tools, **millions of skilled creators remain invisible**.
 
 ---
 
@@ -66,58 +65,75 @@ And without the right tools, millions of skilled creators remain invisible.
 - With one click, the user can post this ready-to-go content on social media or marketplaces.
 - *(Future versions will integrate with Shopify, Amazon Handmade, and more.)*
 
----
-
 **In short:**  
 *Kálā Copilot transforms a single product photo into a polished, market-ready social campaign—name, description, hashtags, price—ready for Instagram, X (Twitter), Facebook, etc.*
+
+---
 
 ### 2.2 How does it work under the hood?
 
 At its core, the solution is driven by collaborative AI agents, each playing a specific role in this workflow:
 
-1. **Onboarding Agent**  
-   Greets users in their language, collects product or shop details, and personalizes the experience.  
-2. **Visual Insight Agent**  
-   Analyzes the uploaded product photo to identify its type, features, and craftsmanship level.  
-3. **Branding/Marketing Agent**  
-   Generates a campaign: product name, description, and hashtags.
+1. **Onboarding Agent**
+    - Greets users in their preferred language and collects essential product/shop info for a personalized setup.
+    - Adjusts prompts based on user responses to ensure a tailored onboarding experience.
+
+2. **Visual Insight Agent**
+    - Analyzes uploaded product photos to determine item type, craftsmanship level, and notable features.
+    - Tags visual details like color, material, pattern, and size to support accurate listings.
+
+3. **Branding/Marketing Agent**
+    - Generates a compelling product name, attention-grabbing description, and platform-specific hashtags.
+    - Adapts messaging style for target platforms (e.g., Etsy, Instagram, Meesho) to maximize appeal.
+
 4. **SEO Agent**
-   Makes sure the textual content is SEO friendly,
-5. **Smart Pricing Agent**  
-   Looks up similar products online and recommends a fair, competitive price.
+    - Optimizes all textual content with relevant keywords and structure for improved search visibility.
+    - Ensures descriptions and tags follow current SEO best practices for ecommerce.
+
+5. **Smart Pricing Agent**
+    - Researches similar product listings online to benchmark and recommend competitive, fair pricing.
+    - Considers craftsmanship, materials, and demand trends to set an optimal price point.
+
 6. **Cataloger Agent**
-   Saves all the information securely in a database.
-8. **Publishing Agent**  
-   Returns ready-to-publish content to the user. (Coming soon: direct posting to social media/ecommerce.)
+    - Securely saves all product data—images, copy, pricing—into a centralized database.
+    - Organizes stored listings for easy management and future access.
+
+7. **Publishing Agent**
+    - Assembles all finalized assets into a ready-to-publish format for the user.
+    - _(Coming soon: Direct posting capabilities to supported social media & ecommerce platforms.)_
 
 ---
 
 ## 3. Who is it for?
 
-Kálā Copilot is for:
+Kálā Copilot is designed for:
 
-• Artisans and skilled creators who produce handmade goods but lack digital marketing skills.  
-• Small business owners and micro-entrepreneurs on WhatsApp, Instagram, Meesho, Etsy, or similar.  
-• Digital-first sellers without marketing teams, especially in underserved areas or minority-owned businesses.
+- **Artisans and skilled creators** who produce exceptional handmade goods but lack the technical or linguistic tools to market themselves online.
 
-Example:  
-Rani, a saree weaver in Bihar, spends weeks weaving a Banarasi silk saree but struggles with pricing, descriptions, and posting. With Kálā Copilot, she uploads a single photo and instantly gets a campaign in her language—product name, compelling description, hashtags, and recommended price.
+- **Small business owners and micro-entrepreneurs** who sell through WhatsApp, Instagram, Meesho, Etsy, or local marketplaces—but struggle to generate content, set prices, or write engaging product descriptions.
+
+- **Digital-first sellers without access to marketing teams**, especially those in underserved regions, tier-2/3 cities, or minority-owned businesses.
+
+**For example:**  
+*Rani, a saree weaver in Bihar, spends weeks crafting a single Banarasi silk saree. But when it comes to selling online, she gets stuck—she doesn’t know what price to set, how to describe it, or what to post. With Kálā Copilot, she uploads one photo—and instantly receives a ready-to-post campaign in her language, complete with a product name, description, price, and hashtags tailored to her platform of choice.*
 
 ---
 
 ## 4. Business Relevance
 
-Kálā Copilot isn’t just a tool—it’s a business enabler. By removing the digital barriers to online selling, it taps into a massive, underserved demographic.
+Kálā Copilot isn’t just a tool—it’s a business enabler.
 
-### 4.1 Why it matters
+By lowering the barrier to online selling, it unlocks a massive user base that has so far been underserved by the digital economy. These creators and micro-entrepreneurs represent a **huge untapped market** for ecommerce platforms, social commerce apps, and logistics players.
 
-• Helps platforms like Meesho, Flipkart, or Amazon India onboard new sellers with ready-to-use listings.  
-• Improves listing quality for better discoverability and structured product data.  
-• Bridges the creator-customer gap in regions lacking marketing expertise or English fluency.  
-• Adds multilingual, localized content that amplifies reach and inclusion.  
-• Extends globally (Etsy, eBay, Meta Shops), giving artisans worldwide a path to online success.
+### Why it matters:
+- **Enables platforms like Meesho, Flipkart, or Amazon India** to onboard thousands of new sellers with ready-to-use listings  
+- **Creates direct value for marketplaces** by improving listing quality, discoverability, and product data structure  
+- **Bridges the creator-to-customer gap**, especially in regions where marketing talent or English fluency is limited  
+- **Adds multilingual and culturally localized content**, expanding reach across languages and markets  
+- Can be extended to global marketplaces like **Etsy, eBay, or Meta Shops**, giving artisans from India, Mexico, and beyond the tools to go global
 
-Kálā Copilot turns individual creators into micro-brands, without forcing them to learn marketing. For platforms, each new user boosts the marketplace growth flywheel.
+Kálā Copilot turns individual creators into micro-brands—without requiring them to learn marketing.  
+And for platforms, it boosts growth at scale, one creator at a time.
 
 ---
 
