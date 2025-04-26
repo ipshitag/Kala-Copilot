@@ -1,9 +1,3 @@
-<!-- 
-  HACKATHON-FRIENDLY README WITH IMPROVED FORMATTING, COLLAPSIBLE SECTIONS, 
-  CONSISTENT HEADING STRUCTURE, AND LIGHT EMOJIS
-  Audience: Hackathon Judges
--->
-
 <p align="center">
   <img src="assets/bannerImages/KP5.png" alt="Banner" width="100%" style="max-width:600px;" />
 </p>
@@ -262,5 +256,3 @@ And just like that, **Kálā Copilot** was born — a small rebellion stitched w
 </details>
 
 ---
-
-<!-- END OF README -->
