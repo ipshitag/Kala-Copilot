@@ -85,3 +85,91 @@ By lowering the barrier to online selling, it unlocks a massive user base that h
 
 Kálā Copilot turns individual creators into micro-brands—without requiring them to learn marketing.  
 And for platforms, it boosts growth at scale, one creator at a time.
+
+# Kálā Copilot — Technical Documentation
+
+## Overview
+
+Kálā Copilot is a modular AI-powered pipeline built using Microsoft Autogen and Azure’s AI Agent Service. It helps artisans convert raw product ideas into high-quality marketing material and catalog-ready listings—entirely through automation.
+
+The system is orchestrated through a sequence of intelligent agents that handle different stages of product onboarding, enhancement, and publishing. Each agent performs its task and passes the result to the next in a **RoundRobin** manner.
+
+---
+
+## Agent Workflow
+
+Each agent is orchestrated via Microsoft **Autogen**, connected in a RoundRobin fashion where outputs flow into the next agent. The order of execution is:
+
+| Agent Name         | Description |
+|--------------------|-------------|
+| **Onboarding Agent** | Processes voice-based onboarding conversations. Extracts user info, generates memorable usernames, and stores structured user profiles in CosmosDB. Also includes CosmosDB tools for direct storage. |
+| **Visual Insight Agent** | Enhances and analyzes uploaded product images. Generates a clean, high-quality version optimized for listings. |
+| **Marketing Agent** | Takes image analysis + user data to generate product descriptions, social captions, hashtags, and marketing copy. |
+| **SEO Agent** | Reviews and improves the generated ad copy to optimize it for search engines. |
+| **Pricing Agent** | Scrapes pricing information using Bing tools and suggests an optimal price based on market trends and product attributes. |
+| **Cataloger Agent** | Saves the finalized product listing to CosmosDB with a unique GUID and user ID key. Uses CosmosDB tools for structured storage. |
+| **Posting Agent** | Fetches listing from CosmosDB and posts to social platforms using APIs (e.g., Twitter API). |
+
+---
+
+## Agent Orchestration: RoundRobin Style
+
+The agents follow a **RoundRobin orchestration pattern** using Microsoft Autogen. Each agent performs its task and passes the result to the next in line, forming a linear and modular pipeline. This ensures clarity, low coupling between agents, and allows new agents to be inserted or removed without disrupting the overall flow.
+
+> This approach enhances scalability and modular innovation—agents are plug-and-play, making it easy to experiment with new logic or repurpose the flow for different industries and datasets.
+
+---
+
+## Stack and Resources Used
+
+| Resource | Purpose |
+|----------|---------|
+| **Azure AI Agent Service** | Hosts the orchestration and manages agent communication. |
+| **Azure OpenAI** | Powers the core intelligence behind most agents (e.g., onboarding, marketing). |
+| **Microsoft Autogen** | Enables dynamic multi-agent conversations in a RoundRobin chain. |
+| **Azure CosmosDB** | Stores structured product and user data. Enables fast reads/writes. |
+| **Azure WebApp Service** | Hosts the frontend experience for users. |
+| **Azure Speech Service** | Converts voice onboarding into text for analysis. |
+| **Twitter API** | Used by the Posting Agent to publish product listings to social media. |
+| **GitHub Copilot** | Helped us sneakily write some of the logic across agents and utilities here and there 👀 |
+
+---
+
+## Design Highlights
+
+- **Low-Code Modularity**: Each agent is designed as a standalone service, easily replaceable or extendable without touching the core orchestration logic.
+- **Python-Native Stack**: Built entirely using Python-first tools like Azure Autogen, OpenAI SDKs, and CosmosDB clients.
+- **Optimized for Ease**: The user interface is minimal and voice-led; product listing is reduced to an image upload with zero technical friction.
+- **Infra Efficiency**: Azure services ensure serverless scale, reliability, and minimal devops overhead.
+
+---
+
+## Operational Flow
+
+### Onboarding Phase
+1. User sets up their account via a **voice-based conversation**, where they naturally provide all needed information.
+2. This information is passed to the **Onboarding Agent**, which parses and stores the details in CosmosDB.
+3. Onboarding completes with user data structured and accessible.
+
+### Product Listing Phase
+1. User uploads an image.
+2. It goes through the following pipeline:
+   - **Visual Insight Agent**
+   - **Marketing Agent**
+   - **SEO Agent**
+   - **Pricing Agent**
+   - **Cataloger Agent**
+   - **Posting Agent**
+
+Each agent contributes to improving, enriching, and finalizing the product listing before it is published online.
+
+---
+
+## Future Enhancements
+
+- **Multi-industry Extensions**: The agent pipeline can be adapted to other domains like food, real estate, fashion, etc.
+- **Bulk Catalog Mode**: Upload a folder of images to generate a fully detailed product catalog automatically.
+- **E-commerce Sync**: Push finalized products directly into Shopify, Etsy, or custom storefronts.
+- **Language Support**: Extend multilingual onboarding and generation beyond English for regional users.
+
+---
