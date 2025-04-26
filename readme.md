@@ -19,7 +19,7 @@
    2. [How does it work under the hood?](#22-how-does-it-work-under-the-hood)  
 3. [Who is it for?](#3-who-is-it-for)  
 4. [Business Relevance](#4-business-relevance)   
-5. [Technical Overview](#5. Technical Overview)  
+5. [Technical Overview](#5-technical-overview)  
    1. [Modular Agents: The Brains Behind Kálá Copilot 🧠](#51-modular-agents-the-brains-behind-kálá-copilot-)
    2. [Workflow](#52-workflow)  
       1. [User Onboarding](#521-user-onboarding)  
