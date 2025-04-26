@@ -1,0 +1,6 @@
+Use the given 'art_description' to create a Bing search query that asks for the average market price of the described artwork. Be direct and include key details to maximize search accuracy.
+--- Input ---
+{art_description}
+
+--- Output Format Instructions ---
+{format_instructions}
