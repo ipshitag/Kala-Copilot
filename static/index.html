@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Step 1: Upload Image</title>
+    <style>
+        #loader {
+            display: none;
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+<h2>Step 1: Upload Image</h2>
+<input type="file" id="imageInput"><br><br>
+<button type="button" onclick="uploadImage()">Upload</button>
+<div id="status"></div>
+<div id="loader"></div>
+<script>
+async function uploadImage() {
+    let fileInput = document.getElementById('imageInput');
+    let file = fileInput.files[0];
+    let loader = document.getElementById('loader');
+    let status = document.getElementById('status');
+
+    if (!file) {
+        alert('Select a file first!');
+        return;
+    }
+
+    let fd = new FormData();
+    fd.append("file", file);
+
+    loader.style.display = 'block';
+    status.innerText = '';
+
+    try {
+        let resp = await fetch("/upload-image/", {method: "POST", body: fd});
+        let data = await resp.json();
+        
+        if (data.blob_name) {
+            status.innerHTML = "Uploaded!<br>Blob: <b>" + data.blob_name + "</b><br>URL: <b>" + data.blob_url + "</b>";
+        } else {
+            status.innerText = JSON.stringify(data);
+        }
+    } catch (error) {
+        status.innerText = "Error: " + error.message;
+    } finally {
+        loader.style.display = 'none';
+    }
+}
+</script>
+</body>
+</html>

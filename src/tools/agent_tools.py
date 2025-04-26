@@ -5,6 +5,7 @@ import json
 from azure.cosmos import CosmosClient, exceptions
 import uuid
 from datetime import datetime
+import requests
 import re
 import base64
 from openai import AzureOpenAI  
@@ -28,14 +29,14 @@ az_model_client = AzureOpenAI(
     api_key=api_key,
 )
 
-def image_describing_tool(image_input,mime_type=None):
+def image_describing_tool(image_input, mime_type=None):
     """
-    Processes an image file (given as a file path or bytes object), returning structured description information.
+    Processes an image from a local path, URL, or bytes, returning structured description information.
 
     Args:
-        image_input (str or bytes): The image to process. Provide a file path (str) or the image data as bytes.
-        mime_type (str, optional): The MIME type of the image. Required if `image_input` is bytes; 
-                                if a file path is provided, MIME type is inferred automatically.
+        image_input (str or bytes): The image to process. Provide a file path (str), URL (str), or the image data as bytes.
+        mime_type (str, optional): The MIME type of the image. Required if `image_input` is bytes;
+                                inferred automatically if a file path or URL is provided.
 
     Returns:
         dict: Structured information about the image if processing succeeds.
@@ -44,21 +45,28 @@ def image_describing_tool(image_input,mime_type=None):
     
     # Step 1: Load and encode image
     try:
-        if isinstance(image_input, str):  # File path
-            if not os.path.isfile(image_input):
-                return f"Error: File '{image_input}' does not exist. Please check your path."
-            if mime_type is None:
-                mime_type, _ = guess_type(image_input)
-            with open(image_input, "rb") as image_file:
-                image_bytes = image_file.read()
-            if len(image_bytes) == 0:
-                return f"Error: File '{image_input}' is empty."
+        if isinstance(image_input, str):
+            if image_input.startswith("http://") or image_input.startswith("https://"):
+                response = requests.get(image_input)
+                if response.status_code != 200:
+                    return f"Error: Unable to download image from URL. HTTP Status Code: {response.status_code}"
+                image_bytes = response.content
+                mime_type = response.headers.get('content-type')
+            else:
+                if not os.path.isfile(image_input):
+                    return f"Error: File '{image_input}' does not exist. Please check the path."
+                if mime_type is None:
+                    mime_type, _ = guess_type(image_input)
+                with open(image_input, "rb") as image_file:
+                    image_bytes = image_file.read()
+                if len(image_bytes) == 0:
+                    return f"Error: File '{image_input}' is empty."
         elif isinstance(image_input, bytes):
-            image_bytes = image_input
-            if not image_bytes:
+            if not image_input:
                 return "Error: Provided image bytes are empty."
+            image_bytes = image_input
         else:
-            return "Error: image_input must be a file path (str) or bytes object."
+            return "Error: image_input must be a URL, file path (str), or bytes object."
     except Exception as e:
         return f"Error reading image: {str(e)}"
 
@@ -71,34 +79,20 @@ def image_describing_tool(image_input,mime_type=None):
         return f"Error: failed to base64-encode image ({str(e)})."
 
     # Step 2: Construct chat prompt
-    prompt = """Please look at the image and provide a detailed description to the last minute details. Make sure to include the following details in the description:
-                    description - A detailed description of the image including traditional_name, size, color, material used in the image.
-                    Provide in a crude way, which will be polished later. Write in terms of the product and not the image.
-                    """
+    prompt = """Please look at the image and provide a detailed description to the last minute details. Include details like traditional_name, size, color, and material used in the image. Provide in a crude way, which will be polished later. Write in terms of the product and not the image."""
+
     chat_prompt = [
         {
             "role": "system",
-            "content": [
-                {
-                    "type": "text",
-                    "text": """You are an AI assistant whose task is to describe image as required by the user."""
-                }
-            ]
+            "content": "You are an AI assistant whose task is to describe the image as required by the user."
         },
         {
             "role": "user",
-            "content": [
-                {
-                    "type": "text",
-                    "text": """""".format(prompt)
-                },
-                {
-                    "type": "image_url",
-                    "image_url": {
-                        "url": f"data:{mime_type};base64,{base64_encoded_data}"
-                    }
-                },
-            ]
+            "content": prompt
+        },
+        {
+            "role": "user",
+            "content": f"data:{mime_type};base64,{base64_encoded_data}"
         }
     ]
 

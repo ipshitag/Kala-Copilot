@@ -1,68 +1,55 @@
 import os
-import asyncio
-from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
-from src.tools.azure_agent_wrapper import branding_agent, cataloger_agent, onboarding_agent,visual_insight_agent,seo_agent,user_proxy,planning_agent,selector_prompt
-from src.tools.agent_tools import image_describing_tool
-from utils.llm_config import config_list
-import asyncio
+import uuid
+from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from azure.storage.blob import BlobServiceClient
+from dotenv import load_dotenv
 
-az_model_client = AzureOpenAIChatCompletionClient(
-    azure_deployment="gpt-4o",
-    model="gpt-4o",
-    api_version=os.environ.get("AZURE_OPENAI_API_VERSION"),
-    azure_endpoint=os.environ.get("AZURE_OPENAI_API_ENDPOINT"),
-    api_key=os.environ.get("AZURE_OPENAI_KEY"),
+# Load environment variables
+load_dotenv()
+
+# Load Azure configuration
+AZURE_STORAGE_CONNECTION_STRING = os.environ.get("AZURE_STORAGE_CONNECTION_STRING")
+AZURE_CONTAINER_NAME = os.environ.get("AZURE_CONTAINER_NAME")
+
+if not AZURE_STORAGE_CONNECTION_STRING or not AZURE_CONTAINER_NAME:
+    raise ValueError("Azure storage configuration is missing")
+
+blob_service_client = BlobServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
+container_client = blob_service_client.get_container_client(AZURE_CONTAINER_NAME)
+
+app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # You can specify a list of domains here
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-llm_config = {"config_list": config_list, "seed": 52}
+# Serve index.html at root
+@app.get("/", response_class=FileResponse)
+async def serve_index():
+    return FileResponse("static/index.html")
 
-file = r'images\image1.jpg'
-image_description = image_describing_tool(file)
+# Serve static files (like index.html, CSS, JS)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-async def run_agent(agent, task_template, message_source, input_text):
-    task = task_template.format(input_text)
-    result = await agent.run(task=task)
-    for message in result.messages:
-        if getattr(message, "source", None) == message_source:
-            return message.content
+# Handle image uploads
+@app.post("/upload-image/")
+async def upload_image(file: UploadFile = File(...)):
+    try:
+        ext = os.path.splitext(file.filename)[-1]
+        blob_name = f"{uuid.uuid4().hex}{ext}"
 
-visual_task_template = "Create a polished and stunning description of, treat the image as a product: {}"
-marketing_task_template = "Based on the following product description, create a marketing ad copy of the product: {}"
-seo_agent_task_template = "Create a SEO optimized product description for the following marketing copy: {}"
-cataloger_agent_task_template = "Create a product catalog entry for the following marketing copy: {}"
+        contents = await file.read()
+        container_client.upload_blob(name=blob_name, data=contents)
 
-visual_agent_result = asyncio.run(
-    run_agent(
-        agent=visual_insight_agent,
-        task_template=visual_task_template,
-        message_source="visual_insight_agent",
-        input_text=image_description
-    )
-)
-
-branding_agent_result = asyncio.run(
-    run_agent(
-        agent=branding_agent,
-        task_template=marketing_task_template,
-        message_source="branding_agent",
-        input_text=visual_agent_result
-    )
-)
-
-seo_agent_result = asyncio.run(
-    run_agent(
-        agent=seo_agent,
-        task_template=seo_agent_task_template,
-        message_source="seo_agent",
-        input_text=branding_agent_result
-    )
-)
-
-cataloger_agent_result = asyncio.run(
-    run_agent(
-        agent=cataloger_agent,
-        task_template=cataloger_agent_task_template,
-        message_source="cataloger_agent",
-        input_text=seo_agent_result
-    )
-)
+        blob_url = f"https://{blob_service_client.account_name}.blob.core.windows.net/{AZURE_CONTAINER_NAME}/{blob_name}"
+        return {"blob_url": blob_url, "blob_name": blob_name}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
