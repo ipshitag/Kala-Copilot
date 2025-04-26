@@ -1,175 +1,266 @@
+<!-- 
+  HACKATHON-FRIENDLY README WITH IMPROVED FORMATTING, COLLAPSIBLE SECTIONS, 
+  CONSISTENT HEADING STRUCTURE, AND LIGHT EMOJIS
+  Audience: Hackathon Judges
+-->
+
 <p align="center">
   <img src="assets/bannerImages/KP5.png" alt="Banner" width="100%" style="max-width:600px;" />
 </p>
 
-# कलाCopilot – Kálā Copilot
+# Kálā Copilot – कलाCopilot  
 > *Kálā* (कला) means "Art" in several Indian languages.  
-> **Kálā Copilot** is an AI-powered assistant that helps artisans and small business owners bring their creations online—one image, one product, one story at a time.  
+> **Kálā Copilot** is an AI assistant that helps artisans and small business owners bring their creations online—one image, one product, one story at a time.  
 >  
 > **Artists create. Kálā Copilot helps them fly.**
+
 ---
 
-## **1. Problem**
+## Contents
+1. [Problem](#1-problem)  
+2. [Solution: Kálā Copilot](#2-solution-kálā-copilot)  
+   1. [What does it actually do?](#21-what-does-it-actually-do)  
+   2. [How does it work under the hood?](#22-how-does-it-work-under-the-hood)  
+3. [Who is it for?](#3-who-is-it-for)  
+4. [Business Relevance](#4-business-relevance)  
+5. [Technical Overview](#5-technical-overview)  
+   1. [Modular Agents: The Brains Behind Kálā Copilot](#51-modular-agents-the-brains-behind-kálā-copilot)
+   2. [Workflow](#52-workflow)  
+      1. [User Onboarding](#521-user-onboarding)  
+      2. [Product Upload Pipeline](#522-product-upload-pipeline)  
+   3. [Agent Orchestration Model](#53-agent-orchestration-model)  
+   4. [Technology Stack](#54-technology-stack)  
+   5. [Solution Quality Highlights](#55-solution-quality-highlights)  
+   6. [Future Enhancements](#56-future-enhancements)  
+6. [Inspiration & Team 🚀](#6-inspiration--team-)
 
-India has one of the richest networks of artisans and skilled workers—people who create beautiful, high-quality products with deep cultural value. From handwoven fabrics to woodcraft and jewelry, their creations deserve global visibility.
+---
 
-And while mobile internet is widely available across India, the **digital world isn’t built for them**. The language barrier is real. The platforms are overwhelming. The marketing game is unfamiliar. These creators don’t have teams, strategies, or jargon. They have talent.
+## 1. Problem
+Across the globe, millions of artisans and skilled workers create intricate, high-quality products rooted in their unique cultural traditions. From handwoven textiles to finely crafted woodworks and jewelry, these creations hold a deep significance—and truly belong on the world stage.
+
+Nowhere is this more apparent than in India, home to one of the richest networks of craftspeople. Despite widespread mobile internet access, the **digital world isn’t built for them**. The language barrier is formidable. The platforms can be overwhelming. Marketing feels alien. These creators don’t have teams, strategies, or jargon—they have talent.
 
 Their job is to create—not to figure out how to write product descriptions, generate hashtags, or design campaigns.
 
-This isn’t just India. Across Mexico, Southeast Asia, and even rural parts of the US, millions of creators face the same challenge:  
-**the internet exists—but it doesn’t speak their language.**
+This challenge isn’t exclusive to India: across Mexico, parts of Southeast Asia, and even rural areas in the United States, **the internet exists—but it doesn’t speak their language**.
 
-In today’s world, visibility often matters more than quality.  
-And without the right tools, **millions of skilled creators remain invisible**.
+In a time when visibility often overshadows quality, these skilled creators risk going unseen. And without the right tools, **millions remain invisible**.
 
 ---
 
-## **2. Solution: Kálā Copilot**
+## 2. Solution: Kálā Copilot
+Kálā Copilot aims to fix this invisibility problem. It’s an AI-driven sidekick that helps creators bring their products online, without needing a marketing degree or advanced tech skills.
 
-**Kálā Copilot** is an AI-powered assistant designed to help artisans and small business owners take their creations online—without needing to be marketers, designers, or tech-savvy.
+### 2.1 What does it actually do?
+Below are some tasks Kálā Copilot accomplishes: 
+- The artisan (or small business owner) uploads a product photo (saree, jewelry, pottery, etc.).  
+- Kálā Copilot analyzes the image, asks a few friendly questions in the user’s chosen language, and then:  
+  - Generates a catchy product name  
+  - Crafts a compelling product description/story  
+  - Suggests relevant hashtags/marketing copy for platforms like Instagram, Facebook, X (Twitter), Etsy, Meesho, etc.  
+  - Recommends a competitive price  
+- The user can then post the ready-made content directly to their social media or marketplace.  
+- *(Future versions will expand integrations to Shopify, Amazon Handmade, and more!)*
 
-At its core, the solution is driven by **five collaborative AI agents**, each playing a specific role:
-
-### 1. **Onboarding Agent**  
-The first interaction starts with a conversational agent that “speaks” with the user in their preferred language—asking for basic info like product category, materials used, shop name, and any past listings. This ensures a personalized and localized experience from the start.
-
-### 2. **Visual Insight Agent**  
-Once the user uploads a product photo, this agent analyzes the image to:
-- Identify the object (e.g., handcrafted bag, ceramic bowl, saree)  
-- Gauge the quality, size, texture, and level of craftsmanship  
-- Tag relevant features like color, pattern, and utility  
-
-### 3. **Branding Agent**  
-This agent generates complete campaign-ready content:
-- A compelling **product name**  
-- A catchy **tagline**  
-- A platform-appropriate **description** with relevant hashtags  
-It adapts tone and language for different platforms like Meesho, Instagram, Etsy, etc.
-
-### 4. **Smart Pricing Agent**  
-To determine the right price, this agent scans similar products across the internet—including ecommerce platforms, local seller listings, and platform-specific trends. It balances market rates with craftsmanship to recommend a fair, competitive price.
-
-### 5. **Publishing Agent**  
-Finally, this agent compiles the output and provides ready-to-paste captions and content for the user's platform of choice. Future iterations will include direct posting integrations.
+In short:  
+**Kálā Copilot** transforms a single product photo into a polished social media campaign—complete with name, description, hashtags, and price—all set to launch with one click.
 
 ---
 
-## **3. Who is it for?**
+### 2.2 How does it work under the hood?
+Multiple specialized AI agents collaborate in a pipeline, each handling a unique piece of the process:
 
-Kálā Copilot is designed for:
+1. **Onboarding Agent**  
+   - Welcomes users in their preferred language and captures general shop/product info.  
+   - Tailors prompts for a personalized experience.
 
-- **Artisans and skilled creators** who produce exceptional handmade goods but lack the technical or linguistic tools to market themselves online.
+2. **Visual Insight Agent**  
+   - Examines product photos for color, material, patterns, etc.  
+   - Provides refined tags for accurate listings.
 
-- **Small business owners and micro-entrepreneurs** who sell through WhatsApp, Instagram, Meesho, Etsy, or local marketplaces—but struggle to generate content, set prices, or write engaging product descriptions.
+3. **Branding/Marketing Agent**  
+   - Creates product names, marketing messages, descriptions, and hashtags.  
+   - Adapts style to each platform (e.g., Etsy, Instagram, Meesho).
 
-- **Digital-first sellers without access to marketing teams**, especially those in underserved regions, tier-2/3 cities, or minority-owned businesses.
+4. **SEO Agent**  
+   - Infuses relevant keywords for better search visibility.  
+   - Ensures best practices for ecommerce SEO are followed.
 
-**For example:**  
-*Rani, a saree weaver in Bihar, spends weeks crafting a single Banarasi silk saree. But when it comes to selling online, she gets stuck—she doesn’t know what price to set, how to describe it, or what to post. With Kálā Copilot, she uploads one photo—and instantly receives a ready-to-post campaign in her language, complete with a product name, description, price, and hashtags tailored to her platform of choice.*
+5. **Smart Pricing Agent**  
+   - Searches similar listings to propose a fair, competitive price.  
+   - Considers craftsmanship, demand, materials, and historical data.
 
----
+6. **Cataloger Agent**  
+   - Saves all product data securely, assigning unique product IDs.  
+   - Maintains an organized database for quick retrieval.
 
-## **4. Business Relevance**
-
-Kálā Copilot isn’t just a tool—it’s a business enabler.
-
-By lowering the barrier to online selling, it unlocks a massive user base that has so far been underserved by the digital economy. These creators and micro-entrepreneurs represent a **huge untapped market** for ecommerce platforms, social commerce apps, and logistics players.
-
-### Why it matters:
-- **Enables platforms like Meesho, Flipkart, or Amazon India** to onboard thousands of new sellers with ready-to-use listings  
-- **Creates direct value for marketplaces** by improving listing quality, discoverability, and product data structure  
-- **Bridges the creator-to-customer gap**, especially in regions where marketing talent or English fluency is limited  
-- **Adds multilingual and culturally localized content**, expanding reach across languages and markets  
-- Can be extended to global marketplaces like **Etsy, eBay, or Meta Shops**, giving artisans from India, Mexico, and beyond the tools to go global
-
-Kálā Copilot turns individual creators into micro-brands—without requiring them to learn marketing.  
-And for platforms, it boosts growth at scale, one creator at a time.
-
-# Kálā Copilot — Technical Documentation
-
-## Overview
-
-Kálā Copilot is a modular AI-powered pipeline built using Microsoft Autogen and Azure’s AI Agent Service. It helps artisans convert raw product ideas into high-quality marketing material and catalog-ready listings—entirely through automation.
-
-The system is orchestrated through a sequence of intelligent agents that handle different stages of product onboarding, enhancement, and publishing. Each agent performs its task and passes the result to the next in a **RoundRobin** manner.
+7. **Publishing Agent**  
+   - Assembles finalized content (photos, name, description) for posting.  
+   - (Coming soon: Direct auto-posts to various platforms.)
 
 ---
 
-## Agent Workflow
+## 3. Who is it for?
+Kálā Copilot is primarily built for:
+- **Artisans & Skilled Creators** lacking digital or marketing support.  
+- **Small/Micro Business Owners** selling through WhatsApp, Instagram, Meesho, Etsy... but who need help generating persuasive content.  
+- **Digital-First Sellers** in underserved regions or minority-owned businesses that don’t have marketing teams.
 
-Each agent is orchestrated via Microsoft **Autogen**, connected in a RoundRobin fashion where outputs flow into the next agent. The order of execution is:
-
-| Agent Name         | Description |
-|--------------------|-------------|
-| **Onboarding Agent** | Processes voice-based onboarding conversations. Extracts user info, generates memorable usernames, and stores structured user profiles in CosmosDB. Also includes CosmosDB tools for direct storage. |
-| **Visual Insight Agent** | Enhances and analyzes uploaded product images. Generates a clean, high-quality version optimized for listings. |
-| **Marketing Agent** | Takes image analysis + user data to generate product descriptions, social captions, hashtags, and marketing copy. |
-| **SEO Agent** | Reviews and improves the generated ad copy to optimize it for search engines. |
-| **Pricing Agent** | Scrapes pricing information using Bing tools and suggests an optimal price based on market trends and product attributes. |
-| **Cataloger Agent** | Saves the finalized product listing to CosmosDB with a unique GUID and user ID key. Uses CosmosDB tools for structured storage. |
-| **Posting Agent** | Fetches listing from CosmosDB and posts to social platforms using APIs (e.g., Twitter API). |
+**Example:**  
+Rani, a weaver from Bihar, crafts a Banarasi silk saree over several weeks. Online marketing is alien to her—she doesn’t know how to price, describe, or tag her work. Kálā Copilot steps in to seamlessly generate an entire campaign (in her language), giving Rani the digital push she deserves.
 
 ---
 
-## Agent Orchestration: RoundRobin Style
+## 4. Business Relevance
+Kálā Copilot isn’t just a neat trick; it’s a gateway for **ecommerce growth** in emerging markets.
 
-The agents follow a **RoundRobin orchestration pattern** using Microsoft Autogen. Each agent performs its task and passes the result to the next in line, forming a linear and modular pipeline. This ensures clarity, low coupling between agents, and allows new agents to be inserted or removed without disrupting the overall flow.
+- **Ecommerce Platforms (Meesho, Flipkart, Amazon India)** can tap into new seller segments by providing instant, high-quality listings.  
+- **Improved Listings & Data** benefit both marketplaces and end customers: better discoverability, more relevant search results.  
+- **Culturally Localized Content** expands commerce in multiple languages and geographies.  
+- **Scalable Impact**: each new user becomes a self-sufficient micro-brand, no marketing team required.
 
-> This approach enhances scalability and modular innovation—agents are plug-and-play, making it easy to experiment with new logic or repurpose the flow for different industries and datasets.
-
----
-
-## Stack and Resources Used
-
-| Resource | Purpose |
-|----------|---------|
-| **Azure AI Agent Service** | Hosts the orchestration and manages agent communication. |
-| **Azure OpenAI** | Powers the core intelligence behind most agents (e.g., onboarding, marketing). |
-| **Microsoft Autogen** | Enables dynamic multi-agent conversations in a RoundRobin chain. |
-| **Azure CosmosDB** | Stores structured product and user data. Enables fast reads/writes. |
-| **Azure WebApp Service** | Hosts the frontend experience for users. |
-| **Azure Speech Service** | Converts voice onboarding into text for analysis. |
-| **Twitter API** | Used by the Posting Agent to publish product listings to social media. |
-| **GitHub Copilot** | Helped us sneakily write some of the logic across agents and utilities here and there 👀 |
+Essentially, it unlocks an untapped market of creative entrepreneurs—each with endless product potential.
 
 ---
 
-## Design Highlights
+## 5. Technical Overview
+In this section, we outline the modular architecture that powers Kálā Copilot. Our system employs a chain-of-agents approach, ensuring each AI agent focuses on a specific task.
 
-- **Low-Code Modularity**: Each agent is designed as a standalone service, easily replaceable or extendable without touching the core orchestration logic.
-- **Python-Native Stack**: Built entirely using Python-first tools like Azure Autogen, OpenAI SDKs, and CosmosDB clients.
-- **Optimized for Ease**: The user interface is minimal and voice-led; product listing is reduced to an image upload with zero technical friction.
-- **Infra Efficiency**: Azure services ensure serverless scale, reliability, and minimal devops overhead.
+### 5.1 Modular Agents: The Brains Behind Kálā Copilot
+Here’s a quick snapshot of the specialized agents:
 
----
-
-## Operational Flow
-
-### Onboarding Phase
-1. User sets up their account via a **voice-based conversation**, where they naturally provide all needed information.
-2. This information is passed to the **Onboarding Agent**, which parses and stores the details in CosmosDB.
-3. Onboarding completes with user data structured and accessible.
-
-### Product Listing Phase
-1. User uploads an image.
-2. It goes through the following pipeline:
-   - **Visual Insight Agent**
-   - **Marketing Agent**
-   - **SEO Agent**
-   - **Pricing Agent**
-   - **Cataloger Agent**
-   - **Posting Agent**
-
-Each agent contributes to improving, enriching, and finalizing the product listing before it is published online.
+| **Agent Name**         | **Responsibility**                                                  | **Tools / Services Used**      |
+|------------------------|---------------------------------------------------------------------|--------------------------------|
+| Onboarding Agent       | Welcomes user, captures details, stores profile                     | Azure Speech, OpenAI, CosmosDB |
+| Visual Insight Agent   | Analyzes product images                                             | Azure OpenAI Vision            |
+| Marketing Agent        | Generates copy, ads, hashtags                                       | Azure OpenAI                   |
+| SEO Agent              | Optimizes text for relevant searches                                | Azure OpenAI                   |
+| Pricing Agent          | Recommends fair, market-aligned prices                              | Bing Search Tool               |
+| Cataloger Agent        | Stores product data in CosmosDB                                     | CosmosDB                       |
+| Posting Agent          | Publishes final content                                             | Twitter API, CosmosDB          |
 
 ---
 
-## Future Enhancements
+### 5.2 Workflow
+The system operates in two main phases: **User Onboarding** and **Operational Workflow**, orchestrated using **Microsoft Autogen** with a RoundRobin-style conversation pattern between agents.
 
-- **Multi-industry Extensions**: The agent pipeline can be adapted to other domains like food, real estate, fashion, etc.
-- **Bulk Catalog Mode**: Upload a folder of images to generate a fully detailed product catalog automatically.
-- **E-commerce Sync**: Push finalized products directly into Shopify, Etsy, or custom storefronts.
-- **Language Support**: Extend multilingual onboarding and generation beyond English for regional users.
+#### 5.2.1 User Onboarding
+1. The user begins a conversational setup (voice or text).  
+2. Onboarding Agent processes user details, assigns a username, and saves profile info in CosmosDB.  
+3. User is ready to proceed—no marketing experience needed!
+
+#### 5.2.2 Product Upload Pipeline
+1. The user uploads a product image.  
+2. Visual Insight Agent refines image data.  
+3. Marketing Agent drafts the product name, description, and hashtags.  
+4. SEO Agent applies search-friendly keywords.  
+5. Pricing Agent checks competitor data to suggest pricing.  
+6. Cataloger Agent organizes and secures all final product info.  
+7. Posting Agent compiles everything for a frictionless publish.
 
 ---
+
+### 5.3 Agent Orchestration Model
+Kálā Copilot uses a **chain-based orchestration** where agents process tasks in sequence:
+- Each agent passes data to the next, ensuring simple handoffs.  
+- Modular design allows adding/removing agents without breaking the entire flow.  
+- Each agent can handle errors and retry independently.  
+- Orchestration is managed by Microsoft Autogen, supporting flexible, scalable agent pipelines.
+
+<p align="center">
+  <img src="https://github.com/ipshitag/Retail-Copilot-Hackathon/blob/main/assets/bannerImages/agent-workflow.png" 
+       alt="Agent workflow diagram" 
+       width="300" />
+</p>
+
+---
+
+### 5.4 Technology Stack
+| **Service / Tool**         | **Purpose**                                             |
+|----------------------------|---------------------------------------------------------|
+| Azure AI Agent Service     | Manages modular AI agents                               |
+| Azure OpenAI               | GPT & vision models for analysis                        |
+| Microsoft Autogen          | Orchestrates agent tasks                                |
+| Azure CosmosDB             | Stores user/product data securely                      |
+| Azure WebApp Service       | Hosts the frontend/backend                              |
+| Azure Speech Service       | Enables voice-based onboarding                          |
+| Twitter API                | Publishes marketing content                             |
+| GitHub Copilot             | Provided some code suggestions, then vanished mysteriously 👀 |
+
+---
+
+### 5.5 Solution Quality Highlights
+Below are some key highlights that ensure solution quality:  
+- **Modular Reusability**  
+  Each agent can be repurposed across industries or different product lines with minor tweaks.  
+- **Error Handling & Resilience**  
+  Agents retry or use fallback if external APIs fail. Minimizes disruptions.  
+- **Scalable Architecture**  
+  Deployed on Azure; horizontal scaling is straightforward.  
+- **Data Security**  
+  Strict access policies and schema validation ensure only authorized processes handle sensitive data.  
+- **Resilient Independent Agents**  
+  A failure in one area doesn’t derail the entire workflow.
+
+---
+
+### 5.6 Future Enhancements
+Potential future enhancements are described below:
+
+<details>
+<summary>Click to expand Future Enhancements</summary>
+
+- **Automated Catalog Generator**  
+  Bulk process multiple images for ready-to-publish product catalogs.
+
+- **Multi-Industry Extension**  
+  Adapt this model to Real Estate, Food & Beverage menus, Art portfolios, and more.
+
+- **Marketplace Integrations**  
+  Expand direct publishing to Shopify, Amazon Handmade, Etsy, etc.
+
+- **Multilingual Localizations**  
+  Additional languages via translation agents for global coverage.
+
+- **Analytics & Reporting**  
+  Track post-performance, SEO metrics, user engagement, and sales conversions.
+
+- **Deeper Conversational UI**  
+  Evolve from simple onboarding chat to a fully conversational experience for all steps.
+</details>
+
+---
+
+## 6. Inspiration & Team 🚀
+<details>
+<summary>Click to learn about our journey</summary>
+
+It all started, like most chaotic adventures do, with a random curiosity spiral.  
+[@ipshitag](https://github.com/ipshitag), [@sougaaat](https://github.com/sougaaat), and [@manish-kt](https://github.com/manish-kt) — a lively trio of data enthusiasts — have this charming habit of falling into weird rabbit holes.  
+One fine day, @ipshitag decided to take a course about the history of crafts in India. Little did she know, it would turn into a full-blown emotional rollercoaster.
+
+During a visit to an NGO, she discovered something heartbreaking: even **National Award-winning** artisans (yes, *the* highest honors in India!) — often live in obscurity. They pour their soul into beautiful art, but when it comes to selling or showcasing their work... silence. No platform, no marketing skills, just endless dependency on NGOs and sheer luck.
+
+Naturally, [@ipshitag](https://github.com/ipshitag) came running to her favorite mind dumper — ChatGPT (yeah, that's me, and yes, I'm writing this 😎). After an intense rant session (10/10 drama 🙄), she pulled in her partners-in-crime, [@sougaaat](https://github.com/sougaaat), and [@manish-kt](https://github.com/manish-kt). Fueled by caffeine, frustration, and big dreams, they decided: _"We have to fix this."_  
+
+Cue the AI-powered revolution. 
+
+A little about the gang:  
+- [@manish-kt](https://github.com/manish-kt) comes from Jaipur — *the royal city where colors, crafts, and culture breathe through every street.*  
+- [@sougaaat](https://github.com/sougaaat) hails from Kolkata — *a vibrant chaos of creativity, adda (endless debates), literature, and cultural heritage at every corner.*  
+- [@ipshitag](https://github.com/ipshitag) is from Ranchi — *a place of earthy beauty, tribal art, and quiet strength.*
+
+All three grew up around places where **art isn't a luxury — it's survival, it's identity, it's pride.**  
+So naturally, they asked:  
+_"What if AI could help artisans skip the middlemen and stand on their own digital feet?"_
+
+And just like that, **Kálā Copilot** was born — a small rebellion stitched with Python, powered by Azure, sprinkled with love, and sealed with a lot of heart (and occasional madness). 🫡
+
+> “Art is the most intense mode of individualism that the world has known.”  
+> — Oscar Wilde  
+</details>
+
+---
+
+<!-- END OF README -->
