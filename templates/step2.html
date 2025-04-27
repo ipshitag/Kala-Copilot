@@ -1,61 +1,151 @@
 {% extends "layout.html" %}
 {% block content %}
 <style>
+  /* General Styles */
   .fade-out {
     opacity: 0;
     transition: opacity 0.4s ease;
   }
+
+  h2 {
+    font-size: 1.75rem;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .img-fluid {
+    border-radius: 8px;
+  }
+
+  /* Loader */
+  .loader {
+    display: none;
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .loader p {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6f42c1;
+    margin-top: 10px;
+  }
+
+  .loader span {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid #6f42c1;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Button Styles */
+  .btn {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    text-align: center;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-purple {
+    background-color: #6f42c1;
+  }
+
+  .btn-purple:hover {
+    background-color: #5a33a8;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
 </style>
-<h2>Step 2: Visual Insight Agent</h2>
-<img src="{{ blob_url }}" style="max-height:200px" class="img-fluid d-block mx-auto mb-3" />
 
-<div class="loader" id="loader" style="display:none;">
-  <span></span>
-  <p>Generating Insight...</p>
+<div class="container">
+  <h2>Step 2: Visual Insight Agent</h2>
+
+  <img src="{{ blob_url }}" style="max-height:200px" class="img-fluid d-block mx-auto mb-3" />
+
+  <div class="mt-3">
+    <label for="feedback-input" class="form-label">Additional Feedback (Optional):</label>
+    <textarea class="form-control" id="feedback-input" rows="3" placeholder="Enter your feedback here"></textarea>
+  </div>
+
+  <!-- Loader -->
+  <div class="loader" id="loader">
+    <span></span>
+    <p>Generating Insight...</p>
+  </div>
+
+  <!-- Result Section -->
+  <div id="result" class="mt-3"></div>
+
+  <!-- Buttons -->
+  <button id="btn-generate" class="btn btn-purple btn-lg w-100 mt-3">Generate Visual Insight</button>
+  <button id="btn-next" class="btn btn-purple btn-lg mt-3 w-100" style="display:none;" data-next-url="{{ url_for('step3') }}">
+    Next Step
+  </button>
 </div>
-<div id="result" class="mt-3"></div>
-
-<button id="btn-generate" class="btn btn-purple btn-lg w-100">Generate Visual Insight</button>
-<button id="btn-next" class="btn btn-purple btn-lg mt-3 w-100"
-        style="display:none;" data-next-url="{{ url_for('step3') }}">
-  Next Step
-</button>
-
 
 <script>
   const imageDescription = "{{ imageDescription }}";
+
   function showLoader() {
     document.getElementById("loader").style.display = "block";
   }
+
   function hideLoader() {
     document.getElementById("loader").style.display = "none";
   }
 
+  // Generate Visual Insight
   document.getElementById("btn-generate").addEventListener("click", () => {
+    const feedback = document.getElementById("feedback-input").value;
     showLoader();
     fetch("/generate_insight", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            description: imageDescription
-          })
-        })
-    .then(response => response.json())
-    .then(data => {
-      hideLoader();
-      if (data.error) throw data.error;
-      document.getElementById("result").innerHTML =
-        "<p><strong>Description:</strong> " + data.visual_insight + "</p>";
-      document.getElementById("btn-generate").style.display = "none";
-      document.getElementById("btn-next").style.display = "block";
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        description: imageDescription,
+        feedback: feedback
+      })
     })
-    .catch(error => {
-      hideLoader();
-      document.getElementById("result").textContent = "Error: " + error;
-    });
+      .then(response => response.json())
+      .then(data => {
+        hideLoader();
+        if (data.error) throw data.error;
+        document.getElementById("result").innerHTML =
+          "<p><strong>Insight:</strong> " + data.visual_insight + "</p>";
+        document.getElementById("btn-generate").style.display = "none";
+        document.getElementById("btn-next").style.display = "block";
+      })
+      .catch(error => {
+        hideLoader();
+        document.getElementById("result").textContent = "Error: " + error;
+      });
   });
 
-  // Fade out on Next Step
+  // Fade-out animation and navigation for the Next Step
   document.getElementById("btn-next").addEventListener("click", function() {
     const nextUrl = this.getAttribute("data-next-url");
     document.body.classList.add("fade-out");

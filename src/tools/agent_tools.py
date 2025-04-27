@@ -30,7 +30,7 @@ az_model_client = AzureOpenAI(
 )
 
 
-def image_describing_tool(image_input, mime_type=None):
+def image_describing_tool(image_input, feedback = None, mime_type=None):
     ...
 
     try:
@@ -65,7 +65,10 @@ def image_describing_tool(image_input, mime_type=None):
 
     # ----------------------------
     # Construct chat prompt
-    common_prompt = "Please look at the image and provide a detailed description to the last minute details. Include details like traditional_name, size, color, and material used in the image. Give an appropriate size of the object in image (use your best guess) Provide in a crude way, which will be polished later. Write in terms of the product and not the image. If the is not a product, please say so. If its some scenery, or some docvument, just say so." 
+    common_prompt = "Please look at the image and provide a detailed description to the last minute details. Include details like traditional_name, size, color, and material used in the image. Give an appropriate size of the object in image (use your best guess) Provide in a crude way, which will be polished later. If the is not a product, please say so. If its some scenery, or some docvument, just say so."
+
+    if feedback:
+        common_prompt += f"\nThe feedback from user is: {feedback}"
 
     chat_prompt = [
         {

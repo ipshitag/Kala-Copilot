@@ -95,13 +95,19 @@ def step1():
 
 @app.route("/generate_description", methods=["POST"])
 def generate_description():
-    blob_url = session.get("image_blob_url")
+    data = request.get_json()
+    blob_url = data.get("imageUrl")
     if not blob_url:
-        return jsonify({"error": "No image in session. Please upload first."}), 400
+        return jsonify({"error": "No image URL provided."}), 400
+    feedback = data.get("feedback", "")  # Capture additional feedback if provided
+    # Assuming image_describing_tool can optionally take feedback
     try:
-        description = image_describing_tool(blob_url)
+        description = image_describing_tool(blob_url, feedback=feedback)
         description = json.dumps(description)
         session["image_description"] = description
+        # Optionally store feedback in session for use in subsequent steps
+        if feedback:
+            session["additional_feedback"] = feedback
         return jsonify({"description": description})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -120,14 +126,17 @@ def step2():
 
 @app.route("/generate_insight", methods=["POST"])
 def generate_insight():
-    # Retrieve previously generated description from session:
+    data = request.get_json()
     image_description = session.get("image_description")
+    feedback = session.get("feedback", "")  # Capture additional feedback if provided
+
     if not image_description:
         return jsonify({"error": "No image description found in session."}), 400
-
+    
     try:
-        # For demonstration, we pass the existing image_description to run_agent:
         prompt_template = "Create a polished and stunning description of this product: {}"
+        if feedback:  # Use feedback if provided
+            prompt_template += f"\n\nAdditional Feedback: {feedback}"
         visual_agent_result = asyncio.run(
             run_agent(
                 agent=visual_insight_agent,
@@ -139,7 +148,6 @@ def generate_insight():
         # Save result in session if you want to use it in subsequent steps
         session["visual_agent_result"] = visual_agent_result
 
-        # Return JSON to the front‐end
         return jsonify({"visual_insight": visual_agent_result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -159,10 +167,15 @@ def step3():
 @app.route("/generate_branding", methods=["POST"])
 def generate_branding():
     visual_result = session.get("visual_agent_result")
+    data = request.get_json()
+    feedback = data.get("feedback", "")
+    is_feedback = data.get("isFeedback", False)  # Indicator if this is a feedback regeneration or not
     if not visual_result:
         return jsonify({"error": "No visual agent result found in session."}), 400
     try:
         marketing_cmd = "Based on this product description, create a marketing ad copy: {}"
+        if is_feedback and feedback:  # Modify text based on if feedback is present and this is a regeneration
+            marketing_cmd += f"\n\nFeedback: {feedback}"
         branding_result = asyncio.run(
             run_agent(
                 agent=branding_agent,
@@ -191,10 +204,14 @@ def step4():
 @app.route("/generate_seo", methods=["POST"])
 def generate_seo():
     branding_res = session.get("branding_agent_result")
+    data = request.get_json()
+    feedback = data.get("feedback", "")  # Now accepting feedback
     if not branding_res:
         return jsonify({"error": "No branding result in session."}), 400
     try:
         seo_cmd = "Create an SEO-optimized product description for the following text: {}"
+        if feedback:  # If there's feedback, include it
+            seo_cmd += f"\n\nFeedback: {feedback}"
         seo_result = asyncio.run(
             run_agent(
                 agent=seo_agent,
@@ -223,11 +240,15 @@ def step5():
 @app.route("/generate_catalog", methods=["POST"])
 def generate_catalog():
     seo_res = session.get("seo_agent_result")
+    data = request.get_json()
+    feedback = data.get("feedback", "")  # Capture additional feedback from the request
     blob_url = session.get("image_blob_url", "")
     if not seo_res:
         return jsonify({"error": "No SEO result in session."}), 400
     try:
         catalog_cmd = "Create a product catalog entry based on the following copy: {}"
+        if feedback:  # Add feedback to the command if present
+            catalog_cmd += f"\n\nFeedback: {feedback}"
         catalog_cmd = catalog_cmd + f"\n\nImage URL: {blob_url}"
         catalog_result = asyncio.run(
             run_agent(
