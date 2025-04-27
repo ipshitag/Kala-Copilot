@@ -22,3 +22,4 @@ autogen-core==0.4.1
 autogen-ext==0.4.1
 tiktoken==0.8.0
 pyautogen==0.2.29
+requests-oauthlib
