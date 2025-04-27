@@ -30,17 +30,22 @@
 ---
 
 ## 1. Problem
-India has one of the richest networks of artisans and skilled workers—people who create beautiful, high-quality products with deep cultural value. From handwoven fabrics to woodcraft and jewelry, their creations deserve global visibility.
- 
-And while mobile internet is widely available across India, the **digital world isn’t built for them**. The language barrier is real. The platforms are overwhelming. The marketing game is unfamiliar. These creators don’t have teams, strategies, or jargon. They have talent.
- 
- Their job is to create—not to figure out how to write product descriptions, generate hashtags, or design campaigns.
- 
- This isn’t just India. Across Mexico, Southeast Asia, and even rural parts of the US, millions of creators face the same challenge:  
- **the internet exists—but it doesn’t speak their language.**
- 
- In today’s world, visibility often matters more than quality.  
- And without the right tools, **millions of skilled creators remain invisible**.
+
+Millions of skilled creators around the world—artisans, craftspeople, small makers—are invisible in the digital economy.
+
+Not because they lack talent.  
+Because the internet wasn’t built for them.
+
+Platforms are complex. Marketing is a second language.  
+They don't have content teams or ad budgets. They have skill, history, and product.
+
+Today, **visibility beats quality**.  
+And without the right tools, these creators get left out of the global marketplace.
+
+This isn’t just an India problem. It's global—from Southeast Asia to Latin America to rural U.S. towns.  
+**The internet exists—but it doesn’t speak their language.**
+
+There’s a massive opportunity to unlock creativity, culture, and commerce—at scale—by building tools *for* them, not *against* them.
 
 ---
 
