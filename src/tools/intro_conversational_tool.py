@@ -45,7 +45,7 @@ class Response(BaseModel):
     end_of_conversation: bool = Field(description="True if the conversation is finished else False means the conversation is to be continued")
 
 ## spech-to-text
-def recite_model_response(text):
+def recite_model_response(text) -> None:
     """
     Convert a given text string to speech using Azure Text-to-Speech (TTS) and play the resulting audio.
 
@@ -94,7 +94,7 @@ def recite_model_response(text):
         print("Azure TTS Error:", response.status_code, response.text)
 
 ## recording and text-to-speech
-def record_and_transcribe():
+def record_and_transcribe() -> str:
     """
     Record audio from the user's microphone, detect the end of speech using Cobra VAD,
     and transcribe the recorded audio to text using Azure Whisper.
@@ -173,7 +173,7 @@ def record_and_transcribe():
             print("Azure Whisper Error:", response.status_code, response.text)
             return ""
 
-def gather_information():
+def gather_information() -> str:
     """
     Conduct a conversational onboarding session with the user.
 

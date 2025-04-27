@@ -19,7 +19,7 @@ os.environ["AZURE_OPENAI_ENDPOINT"] = os.getenv("AZURE_OPENAI_ENDPOINT")
 os.environ["AZURE_OPENAI_API_VERSION"] = os.getenv("AZURE_OPENAI_API_VERSION")
 os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"] = os.getenv("AZURE_OPENAI_DEPLOYMENT")
 
-def reformat_input(art_description: str):
+def reformat_input(art_description: str) -> str:
     """
     Reformat the input art description JSON to include only productName and productDescription fields.
 
@@ -32,7 +32,7 @@ def reformat_input(art_description: str):
     art_description = json.loads(art_description)
     return json.dumps({key: art_description[key] for key in ["productName", "productDescription"]})
 
-def generate_search_query(art_description: str):
+def generate_search_query(art_description: str) -> str:
     """
     Generate a search query string from the given art description using Azure OpenAI and a prompt template.
 
@@ -68,7 +68,7 @@ def generate_search_query(art_description: str):
     result = chain.invoke({"art_description": art_description})
     return result['search_query']
 
-def bing_search(search_query: str):
+def bing_search(search_query: str) -> Dict:
     """
     Perform a Bing search using a given search query with the help of an LLM agent and the Bing API.
 
