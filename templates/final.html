@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+  .fade-out {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+</style>
+  <h2>Final Output</h2>
+  {% if blob_url %}
+    <img src="{{ blob_url }}" alt="Uploaded image" style="max-height:150px;" class="img-fluid d-block mx-auto mb-3">
+  {% endif %}
+  <p><strong>Image Description (Step 1):</strong> {{ image_description }}</p>
+  <p><strong>Visual Agent Result (Step 2):</strong> {{ visual_agent_result }}</p>
+  <p><strong>Branding Agent Result (Step 3):</strong> {{ branding_agent_result }}</p>
+  <p><strong>SEO Agent Result (Step 4):</strong> {{ seo_agent_result }}</p>
+  <p><strong>Cataloger Agent Result (Step 5):</strong> {{ cataloger_agent_result }}</p>
+  <br>
+  <a href="{{ url_for('index') }}" class="btn btn-purple" id="go-home">Go Home</a>
+<script>
+document.getElementById('go-home').addEventListener('click', function(e) {
+  document.body.classList.add('fade-out');
+  setTimeout(function() {
+    window.location.href = "{{ url_for('index') }}";
+  }, 400);
+  e.preventDefault();
+});
+</script>
+{% endblock %}

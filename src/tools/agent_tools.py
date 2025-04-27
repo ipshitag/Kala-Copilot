@@ -29,72 +29,91 @@ az_model_client = AzureOpenAI(
     api_key=api_key,
 )
 
+
 def image_describing_tool(image_input, mime_type=None):
-    """
-    Processes an image from a local path, URL, or bytes, returning structured description information.
+    ...
 
-    Args:
-        image_input (str or bytes): The image to process. Provide a file path (str), URL (str), or the image data as bytes.
-        mime_type (str, optional): The MIME type of the image. Required if `image_input` is bytes;
-                                inferred automatically if a file path or URL is provided.
-
-    Returns:
-        dict: Structured information about the image if processing succeeds.
-        str: Error message if any issue occurs during processing.
-    """
-    
-    # Step 1: Load and encode image
     try:
         if isinstance(image_input, str):
             if image_input.startswith("http://") or image_input.startswith("https://"):
-                response = requests.get(image_input)
-                if response.status_code != 200:
-                    return f"Error: Unable to download image from URL. HTTP Status Code: {response.status_code}"
-                image_bytes = response.content
-                mime_type = response.headers.get('content-type')
+                # For HTTP(S) image URL: Use URL directly
+                image_mode = "url"
+                image_url = image_input
+                if mime_type is None:
+                    # Guess mime_type (optional)
+                    mime_type, _ = guess_type(image_input)
             else:
+                # Local file path
                 if not os.path.isfile(image_input):
                     return f"Error: File '{image_input}' does not exist. Please check the path."
                 if mime_type is None:
                     mime_type, _ = guess_type(image_input)
                 with open(image_input, "rb") as image_file:
                     image_bytes = image_file.read()
-                if len(image_bytes) == 0:
-                    return f"Error: File '{image_input}' is empty."
+                    if len(image_bytes) == 0:
+                        return f"Error: File '{image_input}' is empty."
+                image_mode = "bytes"
         elif isinstance(image_input, bytes):
             if not image_input:
                 return "Error: Provided image bytes are empty."
             image_bytes = image_input
+            image_mode = "bytes"
         else:
             return "Error: image_input must be a URL, file path (str), or bytes object."
     except Exception as e:
         return f"Error reading image: {str(e)}"
 
-    if mime_type is None:
-        mime_type = 'application/octet-stream'
-
-    try:
-        base64_encoded_data = base64.b64encode(image_bytes).decode('utf-8')
-    except Exception as e:
-        return f"Error: failed to base64-encode image ({str(e)})."
-
-    # Step 2: Construct chat prompt
-    prompt = """Please look at the image and provide a detailed description to the last minute details. Include details like traditional_name, size, color, and material used in the image. Provide in a crude way, which will be polished later. Write in terms of the product and not the image. If the is not a product, please say so. If its some scenery, or some docvument, just say so."""
+    # ----------------------------
+    # Construct chat prompt
+    common_prompt = "Please look at the image and provide a detailed description to the last minute details. Include details like traditional_name, size, color, and material used in the image. Give an appropriate size of the object in image (use your best guess) Provide in a crude way, which will be polished later. Write in terms of the product and not the image. If the is not a product, please say so. If its some scenery, or some docvument, just say so." 
 
     chat_prompt = [
         {
             "role": "system",
             "content": "You are an AI assistant whose task is to describe the image as required by the user."
-        },
-        {
-            "role": "user",
-            "content": prompt
-        },
-        {
-            "role": "user",
-            "content": f"data:{mime_type};base64,{base64_encoded_data}"
         }
     ]
+
+    if image_mode == "url":
+        # HTTP image: use image URL
+        chat_prompt.append({
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": common_prompt
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": image_url
+                    }
+                }
+            ]
+        })
+    else:
+        # Local file or bytes, use data URL (base64)
+        if mime_type is None:
+            mime_type = "application/octet-stream"
+        try:
+            base64_encoded_data = base64.b64encode(image_bytes).decode('utf-8')
+        except Exception as e:
+            return f"Error: failed to base64-encode image ({str(e)})."
+        chat_prompt.append({
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": common_prompt
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:{mime_type};base64,{base64_encoded_data}"
+                    }
+                }
+            ]
+        })
 
     # Step 3: Model call with error handling
     try:
@@ -186,7 +205,8 @@ def add_product_to_cosmos(
     product_description: str,
     price: float,
     category: str,
-    marketing_copy: str
+    marketing_copy: str,
+    image_url: str = None,
 ) -> str:
     """
     Add a product with all necessary fields to Cosmos DB.
@@ -217,6 +237,7 @@ def add_product_to_cosmos(
         "price": price,
         "category": category,
         "marketingCopy": marketing_copy,
+        "imageUrl": image_url,
     }
 
     container.create_item(body=item)
@@ -247,6 +268,6 @@ def add_users_to_cosmos(
         "message": "Product successfully added!"
     })
 
-# path = "images\DL - expired.jpg"
+# path = "https://staidemodev.blob.core.windows.net/retail-copilot/image1.jpg"
 # res = image_describing_tool(path)
 # print(res)

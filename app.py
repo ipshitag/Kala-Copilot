@@ -1,21 +1,44 @@
 import os
-import io
 import asyncio
-import requests
-from flask import Flask, request, session, redirect, url_for, render_template_string
-from src.tools.azure_agent_wrapper import branding_agent, cataloger_agent, onboarding_agent,visual_insight_agent,seo_agent,user_proxy,planning_agent,selector_prompt
-from src.tools.agent_tools import image_describing_tool
+from uuid import uuid4
+import json
+from flask import Flask, request, session, render_template, redirect, url_for, jsonify
 from PIL import Image
 
+# Import your custom modules
+from src.tools.azure_agent_wrapper import (
+    branding_agent,
+    cataloger_agent,
+    onboarding_agent,
+    visual_insight_agent,
+    seo_agent,
+    user_proxy,
+    planning_agent,
+    selector_prompt,
+)
+from src.tools.agent_tools import image_describing_tool
 
-# -------------------------------------------------------------------
-# ASYNC RUNNER FOR EACH AGENT
-# -------------------------------------------------------------------
+# ---- Azure Blob Storage Setup ----
+from azure.storage.blob import BlobServiceClient
+
+AZURE_BLOB_CONNECTION_STRING = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+AZURE_BLOB_CONTAINER_NAME = os.getenv("AZURE_CONTAINER_NAME")
+
+blob_service_client = BlobServiceClient.from_connection_string(AZURE_BLOB_CONNECTION_STRING)
+container_client = blob_service_client.get_container_client(AZURE_BLOB_CONTAINER_NAME)
+
+def upload_image_to_blob(file_obj, filename):
+    blob_client = container_client.get_blob_client(filename)
+    file_obj.seek(0)
+    blob_client.upload_blob(file_obj, overwrite=True)
+    blob_url = blob_client.url
+    return blob_url
+
+# ---- Flask App ----
+app = Flask(__name__)
+app.secret_key = "some_secret_key_for_demo"
+
 async def run_agent(agent, task_template, message_source, input_text):
-    """
-    This function formats the task, calls the agent asynchronously,
-    then searches messages for one with the specified 'message_source'.
-    """
     task = task_template.format(input_text)
     result = await agent.run(task=task)
     for msg in result.messages:
@@ -23,196 +46,219 @@ async def run_agent(agent, task_template, message_source, input_text):
             return msg.content
     return result.messages[-1].content
 
-# -------------------------------------------------------------------
-# FLASK APP SETUP
-# -------------------------------------------------------------------
-app = Flask(__name__)
-app.secret_key = "some_secret_key_for_demo"
-
-
+# -------------------------------
+# INDEX
+# -------------------------------
 @app.route("/")
 def index():
-    """
-    Landing page.
-    """
-    html = """
-    <h1>Welcome to the Step-by-Step WebApp</h1>
-    <p>• This demo calls image_describing_tool exactly once in Step 1,<br>
-       then passes along the text to each agent step via Flask session.</p>
-    <a href="/step1">Go to Step 1</a>
-    """
-    return render_template_string(html)
+    return render_template("index.html")
 
+# -------------------------------
+# STEP 0: UPLOAD
+# -------------------------------
+@app.route("/upload", methods=["GET", "POST"])
+def upload():
+    if request.method == "POST":
+        uploaded_file = request.files.get("image_file")
+        if not uploaded_file or not uploaded_file.filename:
+            return render_template("upload.html", error="Please select an image file to upload.")
+        filename = uploaded_file.filename
+        extension = ""
+        if "." in filename:
+            extension = "." + filename.rsplit(".", 1)[1]
+        unique_filename = f"{uuid4().hex}{extension}"
+        try:
+            blob_url = upload_image_to_blob(uploaded_file.stream, unique_filename)
+            session["image_blob_url"] = blob_url
+            for k in [
+                "image_description",
+                "visual_agent_result",
+                "branding_agent_result",
+                "seo_agent_result",
+                "cataloger_agent_result",
+            ]:
+                session.pop(k, None)
+            return redirect(url_for("step1"))
+        except Exception as e:
+            return render_template("upload.html", error=str(e))
+    return render_template("upload.html")
 
-@app.route("/step1", methods=["GET", "POST"])
+# -------------------------------
+# STEP 1: IMAGE DESCRIPTION
+# -------------------------------
+@app.route("/step1", methods=["GET"])
 def step1():
-    """
-    Step 1: Prompt the user for an image path or URL, call image_describing_tool (ONE TIME),
-    store result in session, and proceed.
-    """
-    if request.method == "POST":
-        file_path_or_url = request.form.get("image_path", "")
-        description = image_describing_tool(file_path_or_url)  # <-- Called only once here
+    blob_url = session.get("image_blob_url")
+    if not blob_url:
+        return redirect(url_for("upload"))
+    return render_template("step1.html", blob_url=blob_url)
+
+@app.route("/generate_description", methods=["POST"])
+def generate_description():
+    blob_url = session.get("image_blob_url")
+    if not blob_url:
+        return jsonify({"error": "No image in session. Please upload first."}), 400
+    try:
+        description = image_describing_tool(blob_url)
+        description = json.dumps(description)
         session["image_description"] = description
-        return redirect(url_for("step2"))
-    else:
-        html = """
-        <h2>Step 1: Image Description</h2>
-        <form method="POST">
-            <label for="image_path">Image Path or URL:</label>
-            <input type="text" name="image_path" placeholder="http://..." />
-            <button type="submit">Describe Image & Next</button>
-        </form>
-        """
-        return render_template_string(html)
+        return jsonify({"description": description})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-
-@app.route("/step2", methods=["GET", "POST"])
+# -------------------------------
+# STEP 2: VISUAL INSIGHT AGENT
+# -------------------------------
+@app.route("/step2", methods=["GET"])
 def step2():
-    """
-    Step 2: Use the stored session image_description to call the visual_insight_agent.
-    """
-    if "image_description" not in session:
-        return redirect(url_for("step1"))  # Ensure user did step1 first
+    blob_url = session.get("blob_url", "")
+    image_description = session.get("image_description", "")
+    if not image_description:
+        # If no description found, redirect back so user can generate it
+        return redirect(url_for("step1"))
+    return render_template("step2.html", blob_url=blob_url, image_description=image_description)
 
-    if request.method == "POST":
-        image_description = session["image_description"]
-        visual_task = "Create a polished and stunning description of this product: {}"
+@app.route("/generate_insight", methods=["POST"])
+def generate_insight():
+    # Retrieve previously generated description from session:
+    image_description = session.get("image_description")
+    if not image_description:
+        return jsonify({"error": "No image description found in session."}), 400
+
+    try:
+        # For demonstration, we pass the existing image_description to run_agent:
+        prompt_template = "Create a polished and stunning description of this product: {}"
         visual_agent_result = asyncio.run(
             run_agent(
                 agent=visual_insight_agent,
-                task_template=visual_task,
+                task_template=prompt_template,
                 message_source="visual_insight_agent",
                 input_text=image_description
             )
         )
+        # Save result in session if you want to use it in subsequent steps
         session["visual_agent_result"] = visual_agent_result
-        return redirect(url_for("step3"))
-    else:
-        html = f"""
-        <h2>Step 2: Visual Insight Agent</h2>
-        <p><strong>Image Description (from Step 1):</strong> {session["image_description"]}</p>
-        <form method="POST">
-            <button type="submit">Generate Visual Insight & Next</button>
-        </form>
-        """
-        return render_template_string(html)
 
+        # Return JSON to the front‐end
+        return jsonify({"visual_insight": visual_agent_result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-@app.route("/step3", methods=["GET", "POST"])
+# -------------------------------
+# STEP 3: BRANDING AGENT
+# -------------------------------
+@app.route("/step3", methods=["GET"])
 def step3():
-    """
-    Step 3: Use the result from Step 2 to call the branding_agent.
-    """
     if "visual_agent_result" not in session:
         return redirect(url_for("step2"))
+    return render_template(
+        "step3.html",
+        visual_agent_result=session["visual_agent_result"]
+    )
 
-    if request.method == "POST":
+@app.route("/generate_branding", methods=["POST"])
+def generate_branding():
+    visual_result = session.get("visual_agent_result")
+    if not visual_result:
+        return jsonify({"error": "No visual agent result found in session."}), 400
+    try:
         marketing_cmd = "Based on this product description, create a marketing ad copy: {}"
         branding_result = asyncio.run(
             run_agent(
                 agent=branding_agent,
                 task_template=marketing_cmd,
                 message_source="branding_agent",
-                input_text=session["visual_agent_result"]
+                input_text=visual_result
             )
         )
         session["branding_agent_result"] = branding_result
-        return redirect(url_for("step4"))
-    else:
-        html = f"""
-        <h2>Step 3: Branding Agent</h2>
-        <p><strong>Visual Agent Result:</strong> {session["visual_agent_result"]}</p>
-        <form method="POST">
-            <button type="submit">Generate Marketing Copy & Next</button>
-        </form>
-        """
-        return render_template_string(html)
+        return jsonify({"branding_copy": branding_result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-
-@app.route("/step4", methods=["GET", "POST"])
+# -------------------------------
+# STEP 4: SEO AGENT
+# -------------------------------
+@app.route("/step4", methods=["GET"])
 def step4():
-    """
-    Step 4: Use the result from Step 3 to call the SEO agent.
-    """
     if "branding_agent_result" not in session:
         return redirect(url_for("step3"))
+    return render_template(
+        "step4.html",
+        branding_result=session["branding_agent_result"]
+    )
 
-    if request.method == "POST":
+@app.route("/generate_seo", methods=["POST"])
+def generate_seo():
+    branding_res = session.get("branding_agent_result")
+    if not branding_res:
+        return jsonify({"error": "No branding result in session."}), 400
+    try:
         seo_cmd = "Create an SEO-optimized product description for the following text: {}"
         seo_result = asyncio.run(
             run_agent(
                 agent=seo_agent,
                 task_template=seo_cmd,
                 message_source="seo_agent",
-                input_text=session["branding_agent_result"]
+                input_text=branding_res
             )
         )
         session["seo_agent_result"] = seo_result
-        return redirect(url_for("step5"))
-    else:
-        html = f"""
-        <h2>Step 4: SEO Agent</h2>
-        <p><strong>Branding Agent Result:</strong> {session["branding_agent_result"]}</p>
-        <form method="POST">
-            <button type="submit">Generate SEO Copy & Next</button>
-        </form>
-        """
-        return render_template_string(html)
+        return jsonify({"seo_copy": seo_result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-
-@app.route("/step5", methods=["GET", "POST"])
+# -------------------------------
+# STEP 5: CATALOGER AGENT
+# -------------------------------
+@app.route("/step5", methods=["GET"])
 def step5():
-    """
-    Step 5: Use the result from Step 4 to call the cataloger_agent.
-    """
     if "seo_agent_result" not in session:
         return redirect(url_for("step4"))
+    return render_template(
+        "step5.html",
+        seo_result=session["seo_agent_result"]
+    )
 
-    if request.method == "POST":
+@app.route("/generate_catalog", methods=["POST"])
+def generate_catalog():
+    seo_res = session.get("seo_agent_result")
+    blob_url = session.get("image_blob_url", "")
+    if not seo_res:
+        return jsonify({"error": "No SEO result in session."}), 400
+    try:
         catalog_cmd = "Create a product catalog entry based on the following copy: {}"
+        catalog_cmd = catalog_cmd + f"\n\nImage URL: {blob_url}"
         catalog_result = asyncio.run(
             run_agent(
                 agent=cataloger_agent,
                 task_template=catalog_cmd,
-                message_source="cataloger_agent",
-                input_text=session["seo_agent_result"]
+                message_source="catalog_entry",
+                input_text=seo_res
             )
         )
         session["cataloger_agent_result"] = catalog_result
-        return redirect(url_for("final"))
-    else:
-        html = f"""
-        <h2>Step 5: Cataloger Agent</h2>
-        <p><strong>SEO Agent Result:</strong> {session["seo_agent_result"]}</p>
-        <form method="POST">
-            <button type="submit">Generate Catalog Entry & Next</button>
-        </form>
-        """
-        return render_template_string(html)
+        return jsonify({"catalog_entry": catalog_result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-
-@app.route("/final")
+# -------------------------------
+# FINAL: SHOW ALL OUTPUTS
+# -------------------------------
+@app.route("/final", methods=["GET"])
 def final():
-    """
-    Final page showing results from all steps. 
-    """
     if "cataloger_agent_result" not in session:
         return redirect(url_for("step5"))
-
-    html = f"""
-    <h2>Final Output</h2>
-    <p><strong>Image Description (Step 1):</strong> {session.get("image_description", "")}</p>
-    <p><strong>Visual Agent Result (Step 2):</strong> {session.get("visual_agent_result", "")}</p>
-    <p><strong>Branding Agent Result (Step 3):</strong> {session.get("branding_agent_result", "")}</p>
-    <p><strong>SEO Agent Result (Step 4):</strong> {session.get("seo_agent_result", "")}</p>
-    <p><strong>Cataloger Agent Result (Step 5):</strong> {session.get("cataloger_agent_result", "")}</p>
-    <br>
-    <a href="/">Go Home</a>
-    """
-    return render_template_string(html)
-
+    blob_url = session.get("image_blob_url", "")
+    return render_template(
+        "final.html",
+        blob_url=blob_url,
+        image_description=session.get("image_description", ""),
+        visual_agent_result=session.get("visual_agent_result", ""),
+        branding_agent_result=session.get("branding_agent_result", ""),
+        seo_agent_result=session.get("seo_agent_result", ""),
+        cataloger_agent_result=session.get("cataloger_agent_result", "")
+    )
 
 if __name__ == "__main__":
-    # Run the Flask app
     app.run(debug=True)

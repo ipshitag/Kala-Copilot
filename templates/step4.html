@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+  .fade-out {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+</style>
+<h2>Step 4: SEO Agent</h2>
+<p><strong>Branding Agent Result:</strong> {{ branding_agent_result }}</p>
+<div class="loader" id="loader" style="display:none;">
+  <span></span>
+  <p>Generating SEO Copy...</p>
+</div>
+<div id="result" class="mt-3"></div>
+
+<button id="btn-generate" class="btn btn-purple btn-lg w-100">Generate SEO Copy</button>
+<button id="btn-next" class="btn btn-purple btn-lg mt-3 w-100" style="display:none;" data-next-url="{{ url_for('step5') }}">
+  Next Step
+</button>
+
+<script>
+function showLoader() {
+  document.getElementById("loader").style.display = "block";
+}
+function hideLoader() {
+  document.getElementById("loader").style.display = "none";
+}
+document.getElementById("btn-generate").addEventListener("click", () => {
+  showLoader();
+  fetch("/generate_seo", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      branding_agent_result: "{{ branding_agent_result }}"
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    hideLoader();
+    document.getElementById("result").innerHTML =
+      "<p><strong>SEO Agent Result:</strong> " + data.seo_copy + "</p>";
+    document.getElementById("btn-generate").style.display = "none";
+    document.getElementById("btn-next").style.display = "block";
+  })
+  .catch(error => {
+    hideLoader();
+    document.getElementById("result").textContent = "Error: " + error;
+  });
+});
+
+document.getElementById("btn-next").addEventListener("click", function() {
+  const nextUrl = this.getAttribute("data-next-url");
+  document.body.classList.add("fade-out");
+  setTimeout(function() {
+    window.location.href = nextUrl;
+  }, 400);
+});
+</script>
+{% endblock %}

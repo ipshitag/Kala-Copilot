@@ -1,0 +1,88 @@
+/* style.css */
+
+/* 1. Body */
+body {
+    background: #faf3ff;       /* Light pastel lavender background */
+    color: #4a148c;            /* Deep purple text */
+    font-family: sans-serif;
+    margin: 0;
+    /* Page-flip perspective */
+    perspective: 1200px;
+    overflow-x: hidden;
+  }
+  
+  /* 2. Main container with mild frosted-glass effect */
+  .container {
+    margin: 40px auto 20px;
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border-radius: 15px;
+    box-shadow: 0 0 16px -2px rgba(194, 156, 202, 0.4);
+    padding: 2.5rem;
+    /* For flip transitions: 3D transform style & default transition */
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease;
+  }
+  
+  /* 3. Page flip classes */
+  .flip-out {
+    transform: rotateY(-180deg);
+  }
+  .flip-in {
+    transform: rotateY(0deg);
+  }
+  
+  /* 4. Navbar and footer in pastel purple */
+  .navbar, .footer {
+    background: #c09ff5; /* pastel purple */
+    color: #fff;
+  }
+  
+  .navbar-brand {
+    color: #fff !important;
+    font-weight: bold;
+  }
+  
+  /* 5. Buttons in a pastel-modern style */
+  .btn-purple {
+    background: #dabaf9;   /* lighter pastel purple */
+    border-color: #dabaf9;
+    color: #4a148c;
+    transition: 0.3s;
+  }
+  .btn-purple:hover {
+    background: #ccb2f1;
+    transform: scale(1.04);
+  }
+  
+  /* 6. Footer text color */
+  .footer {
+    color: #fff;
+  }
+  
+  /* 7. Loader / spinner */
+  .loader {
+    display: none;  /* hidden by default */
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .loader.show {
+    display: block; /* show when class "show" is added */
+  }
+  .loader span {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid #4a148c;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }

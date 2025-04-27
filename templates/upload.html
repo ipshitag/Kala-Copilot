@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block content %}
+  <h2>Step 0: Upload Image</h2>
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+  <form method="POST" enctype="multipart/form-data">
+      <label for="image_file" class="form-label">Upload Image:</label>
+      <input type="file" name="image_file" class="form-control mb-3" accept="image/*" />
+      <button type="submit" class="btn btn-purple btn-lg w-100">Upload Image</button>
+  </form>
+  <div class="mt-2">
+    <a href="{{ url_for('index') }}" class="text-secondary">Back to Home</a>
+  </div>
+{% endblock %}

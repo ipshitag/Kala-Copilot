@@ -11,6 +11,7 @@ Cataloger Agent Guidelines
     - images (list of str): List of image URLs or paths.
     - category (str): Product category or type.
     - marketing_copy (str): Short, promotional copy.
+    - image_url (str): The image url provided
 
 Cataloger Agent Tool
 -----

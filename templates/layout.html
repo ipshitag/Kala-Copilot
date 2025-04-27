@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}Kala Copilot{% endblock %}</title>
+  <!-- Modern Google Fonts for elegance -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <style>
+    :root {
+      --navy: #23272f;
+      --gold: #e7c27c;
+      --ivory: #f8f6f0;
+      --dusty-blue: #7b90b2;
+      --terracotta: #e37151;
+      --card-shadow: 0 4px 24px 0 rgba(50, 50, 70, 0.08);
+      --radius: 18px;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      min-height: 100vh;
+      background: var(--ivory);
+      color: var(--navy);
+      font-family: 'Inter', 'Lato', 'Nunito', sans-serif;
+      display: flex;
+      flex-direction: column; /* needed for sticky footer */
+      justify-content: flex-start;
+      align-items: stretch;
+    }
+    .navbar, .footer {
+      background: var(--navy);
+      color: #fff;
+    }
+    .navbar-brand {
+      color: var(--gold) !important;
+      font-weight: 600;
+      letter-spacing: 1px;
+      font-size: 1.35rem;
+    }
+    .container-center {
+      flex: 1 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+    .main-card {
+      width: 100%;
+      max-width: 540px;
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--card-shadow);
+      padding: 2.5rem 2rem;
+      margin: 2rem 0;
+      backdrop-filter: blur(4px);
+    }
+    .btn-gold {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--navy);
+      font-weight: 600;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .btn-gold:hover, .btn-gold:focus {
+      background: #d8b36d;
+      transform: scale(1.03);
+      color: var(--navy);
+    }
+    .footer {
+      flex-shrink: 0;
+      text-align: center;
+      font-size: 0.95rem;
+      padding: 0.8rem 0;
+      color: #fff;
+      border-top: 2px solid var(--gold);
+      letter-spacing: 0.5px;
+    }
+    /* Loader Styling */
+    .loader { display: none; font-size: 1.5rem; text-align: center; }
+    .loader.show { display: block; }
+    .loader span {
+      display: inline-block; width: 1.5rem; height: 1.5rem;
+      border: 2px solid var(--gold); border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    /* Optional: Animate card flip */
+    .flip-out { transform: rotateY(-180deg); transition: transform 0.6s ease; }
+    .flip-in  { transform: rotateY(0deg); transition: transform 0.6s ease; }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{{ url_for('index') }}">Kala Copilot</a>
+    </div>
+  </nav>
+  
+  <div class="container-center">
+    <div class="main-card flip-in" id="main-container">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+  <footer class="footer mt-auto">
+    Kala Copilot &copy; 2024
+  </footer>
+
+  <script>
+    function showLoader() {
+      document.getElementById("loader").classList.add("show");
+    }
+    function hideLoader() {
+      document.getElementById("loader").classList.remove("show");
+    }
+    function flipOut() {
+      document.getElementById("main-container").classList.remove("flip-in");
+      document.getElementById("main-container").classList.add("flip-out");
+      setTimeout(() => {
+        window.location.href = document.getElementById("btn-next").dataset.nextUrl;
+      }, 600);
+    }
+  </script>
+</body>
+</html>

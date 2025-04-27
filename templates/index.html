@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+  .fade-out {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+</style>
+<h1 class="text-center mb-4">Welcome to Kala Copilot</h1>
+<div class="text-center">
+  <a href="{{ url_for('upload') }}" class="btn btn-purple btn-lg" id="start-upload">Start by Uploading an Image</a>
+</div>
+<script>
+document.getElementById('start-upload').addEventListener('click', function(e) {
+  document.body.classList.add('fade-out');
+  // Let the fade animate before navigation
+  setTimeout(function() {
+    window.location.href = "{{ url_for('upload') }}";
+  }, 400);
+  e.preventDefault();
+});
+</script>
+{% endblock %}
