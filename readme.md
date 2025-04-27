@@ -12,9 +12,8 @@
 
 ## Contents
 1. [Problem](#1-problem)  
-2. [Solution: Kálā Copilot](#2-solution-kálā-copilot)  
-   1. [What does it actually do?](#21-what-does-it-actually-do)  
-   2. [How does it work under the hood?](#22-how-does-it-work-under-the-hood)  
+2. [Solution: Kálā Copilot](#2-solution-kálā-copilot)   
+   2. [How does it work under the hood?](21-how-does-it-work-under-the-hood)  
 3. [Who is it for?](#3-who-is-it-for)  
 4. [Business Relevance](#4-business-relevance)  
 5. [Technical Overview](#5-technical-overview)  
@@ -31,23 +30,23 @@
 ---
 
 ## 1. Problem
-Across the globe, millions of artisans and skilled workers create intricate, high-quality products rooted in their unique cultural traditions. From handwoven textiles to finely crafted woodworks and jewelry, these creations hold a deep significance—and truly belong on the world stage.
-
-Nowhere is this more apparent than in India, home to one of the richest networks of craftspeople. Despite widespread mobile internet access, the **digital world isn’t built for them**. The language barrier is formidable. The platforms can be overwhelming. Marketing feels alien. These creators don’t have teams, strategies, or jargon—they have talent.
-
-Their job is to create—not to figure out how to write product descriptions, generate hashtags, or design campaigns.
-
-This challenge isn’t exclusive to India: across Mexico, parts of Southeast Asia, and even rural areas in the United States, **the internet exists—but it doesn’t speak their language**.
-
-In a time when visibility often overshadows quality, these skilled creators risk going unseen. And without the right tools, **millions remain invisible**.
+India has one of the richest networks of artisans and skilled workers—people who create beautiful, high-quality products with deep cultural value. From handwoven fabrics to woodcraft and jewelry, their creations deserve global visibility.
+ 
+And while mobile internet is widely available across India, the **digital world isn’t built for them**. The language barrier is real. The platforms are overwhelming. The marketing game is unfamiliar. These creators don’t have teams, strategies, or jargon. They have talent.
+ 
+ Their job is to create—not to figure out how to write product descriptions, generate hashtags, or design campaigns.
+ 
+ This isn’t just India. Across Mexico, Southeast Asia, and even rural parts of the US, millions of creators face the same challenge:  
+ **the internet exists—but it doesn’t speak their language.**
+ 
+ In today’s world, visibility often matters more than quality.  
+ And without the right tools, **millions of skilled creators remain invisible**.
 
 ---
 
 ## 2. Solution: Kálā Copilot
-Kálā Copilot aims to fix this invisibility problem. It’s an AI-driven sidekick that helps creators bring their products online, without needing a marketing degree or advanced tech skills.
+**Kálā Copilot** is an AI-powered assistant designed to help artisans and small business owners take their creations online—without needing to be marketers, designers, or tech-savvy. Following is an ideal workflow:
 
-### 2.1 What does it actually do?
-Below are some tasks Kálā Copilot accomplishes: 
 - The artisan (or small business owner) uploads a product photo (saree, jewelry, pottery, etc.).  
 - Kálā Copilot analyzes the image, asks a few friendly questions in the user’s chosen language, and then:  
   - Generates a catchy product name  
@@ -62,8 +61,8 @@ In short:
 
 ---
 
-### 2.2 How does it work under the hood?
-Multiple specialized AI agents collaborate in a pipeline, each handling a unique piece of the process:
+### 2.1 How does it work under the hood?
+At its core, the solution is driven by **seven collaborative AI agents**, each playing a specific role:
 
 1. **Onboarding Agent**  
    - Welcomes users in their preferred language and captures general shop/product info.  
@@ -96,25 +95,33 @@ Multiple specialized AI agents collaborate in a pipeline, each handling a unique
 ---
 
 ## 3. Who is it for?
-Kálā Copilot is primarily built for:
-- **Artisans & Skilled Creators** lacking digital or marketing support.  
-- **Small/Micro Business Owners** selling through WhatsApp, Instagram, Meesho, Etsy... but who need help generating persuasive content.  
-- **Digital-First Sellers** in underserved regions or minority-owned businesses that don’t have marketing teams.
-
-**Example:**  
-Rani, a weaver from Bihar, crafts a Banarasi silk saree over several weeks. Online marketing is alien to her—she doesn’t know how to price, describe, or tag her work. Kálā Copilot steps in to seamlessly generate an entire campaign (in her language), giving Rani the digital push she deserves.
+Kálā Copilot is designed for:
+ 
+ - **Artisans and skilled creators** who produce exceptional handmade goods but lack the technical or linguistic tools to market themselves online.
+ 
+ - **Small business owners and micro-entrepreneurs** who sell through WhatsApp, Instagram, Meesho, Etsy, or local marketplaces—but struggle to generate content, set prices, or write engaging product descriptions.
+ 
+ - **Digital-first sellers without access to marketing teams**, especially those in underserved regions, tier-2/3 cities, or minority-owned businesses.
+ 
+ **For example:**  
+ *Rani, a saree weaver in Bihar, spends weeks crafting a single Banarasi silk saree. But when it comes to selling online, she gets stuck—she doesn’t know what price to set, how to describe it, or what to post. With Kálā Copilot, she uploads one photo—and instantly receives a ready-to-post campaign in her language, complete with a product name, description, price, and hashtags tailored to her platform of choice.*
 
 ---
 
 ## 4. Business Relevance
-Kálā Copilot isn’t just a neat trick; it’s a gateway for **ecommerce growth** in emerging markets.
+Kálā Copilot isn’t just a tool—it’s a business enabler.
+ 
+By lowering the barrier to online selling, it unlocks a massive user base that has so far been underserved by the digital economy. These creators and micro-entrepreneurs represent a **huge untapped market** for ecommerce platforms, social commerce apps, and logistics players.
 
-- **Ecommerce Platforms (Meesho, Flipkart, Amazon India)** can tap into new seller segments by providing instant, high-quality listings.  
-- **Improved Listings & Data** benefit both marketplaces and end customers: better discoverability, more relevant search results.  
-- **Culturally Localized Content** expands commerce in multiple languages and geographies.  
-- **Scalable Impact**: each new user becomes a self-sufficient micro-brand, no marketing team required.
-
-Essentially, it unlocks an untapped market of creative entrepreneurs—each with endless product potential.
+### 4.1 Why it matters:
+ - **Enables platforms like Meesho, Flipkart, or Amazon India** to onboard thousands of new sellers with ready-to-use listings  
+ - **Creates direct value for marketplaces** by improving listing quality, discoverability, and product data structure  
+ - **Bridges the creator-to-customer gap**, especially in regions where marketing talent or English fluency is limited  
+ - **Adds multilingual and culturally localized content**, expanding reach across languages and markets  
+ - Can be extended to global marketplaces like **Etsy, eBay, or Meta Shops**, giving artisans from India, Mexico, and beyond the tools to go global
+ 
+ Kálā Copilot turns individual creators into micro-brands—without requiring them to learn marketing.  
+ And for platforms, it boosts growth at scale, one creator at a time.
 
 ---
 
