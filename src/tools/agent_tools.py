@@ -79,7 +79,7 @@ def image_describing_tool(image_input, mime_type=None):
         return f"Error: failed to base64-encode image ({str(e)})."
 
     # Step 2: Construct chat prompt
-    prompt = """Please look at the image and provide a detailed description to the last minute details. Include details like traditional_name, size, color, and material used in the image. Provide in a crude way, which will be polished later. Write in terms of the product and not the image."""
+    prompt = """Please look at the image and provide a detailed description to the last minute details. Include details like traditional_name, size, color, and material used in the image. Provide in a crude way, which will be polished later. Write in terms of the product and not the image. If the is not a product, please say so. If its some scenery, or some docvument, just say so."""
 
     chat_prompt = [
         {
@@ -246,3 +246,7 @@ def add_users_to_cosmos(
         "userID": user_id,
         "message": "Product successfully added!"
     })
+
+# path = "images\DL - expired.jpg"
+# res = image_describing_tool(path)
+# print(res)

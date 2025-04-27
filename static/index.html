@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Step 1: Upload Image</title>
+    <title>Image Upload and Description</title>
     <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            margin-top: 50px;
+        }
+        h2 {
+            color: #3498db;
+        }
         #loader {
+            margin-top: 20px;
             display: none;
             border: 8px solid #f3f3f3;
             border-radius: 50%;
@@ -12,52 +23,78 @@
             height: 40px;
             animation: spin 1s linear infinite;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        #status {
+            margin-top: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-<h2>Step 1: Upload Image</h2>
-<input type="file" id="imageInput"><br><br>
-<button type="button" onclick="uploadImage()">Upload</button>
-<div id="status"></div>
-<div id="loader"></div>
-<script>
-async function uploadImage() {
-    let fileInput = document.getElementById('imageInput');
-    let file = fileInput.files[0];
-    let loader = document.getElementById('loader');
-    let status = document.getElementById('status');
+    <h2>Step 1: Upload Image</h2>
+    <input type="file" id="imageInput"><br><br>
+    <button type="button" onclick="uploadImage()">Upload</button>
+    
+    <div id="status"></div>
+    <div id="visualStatus"></div>
+    <div id="loader"></div>
+    <script>
+        async function uploadImage() {
+            let fileInput = document.getElementById('imageInput');
+            let file = fileInput.files[0];
+            let loader = document.getElementById('loader');
+            let status = document.getElementById('status');
 
-    if (!file) {
-        alert('Select a file first!');
-        return;
-    }
+            if (!file) {
+                alert('Please select a file first!');
+                return;
+            }
 
-    let fd = new FormData();
-    fd.append("file", file);
+            let fd = new FormData();
+            fd.append("file", file);
 
-    loader.style.display = 'block';
-    status.innerText = '';
+            loader.style.display = 'block';
+            status.innerText = '';
 
-    try {
-        let resp = await fetch("/upload-image/", {method: "POST", body: fd});
-        let data = await resp.json();
-        
-        if (data.blob_name) {
-            status.innerHTML = "Uploaded!<br>Blob: <b>" + data.blob_name + "</b><br>URL: <b>" + data.blob_url + "</b>";
-        } else {
-            status.innerText = JSON.stringify(data);
+            try {
+                let uploadResp = await fetch("/upload-image/", { method: "POST", body: fd });
+                let uploadData = await uploadResp.json();
+                
+                if (uploadData.blob_name) {
+                    status.innerHTML = `Uploaded!<br>Blob: <b>${uploadData.blob_name}</b><br>URL: <b>${uploadData.blob_url}</b>`;
+                    await getVisualDescription(uploadData.blob_url);
+                } else {
+                    status.innerText = JSON.stringify(uploadData);
+                }
+            } catch (error) {
+                status.innerText = "Error: " + error.message;
+            } finally {
+                loader.style.display = 'none';
+            }
         }
-    } catch (error) {
-        status.innerText = "Error: " + error.message;
-    } finally {
-        loader.style.display = 'none';
-    }
-}
-</script>
+
+        async function getVisualDescription(blob_url) {
+            let visualStatus = document.getElementById('visualStatus');
+            visualStatus.innerText = 'Processing visual description...';
+
+            try {
+                let visualResp = await fetch("/get-visual-description/", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ blob_url: blob_url })
+                });
+
+                let visualData = await visualResp.json();
+                visualStatus.innerHTML = `Visual Description: <i>${visualData.visual_description}</i>`;
+            } catch (error) {
+                visualStatus.innerText = "Error: " + error.message;
+            }
+        }
+    </script>
 </body>
 </html>
