@@ -25,3 +25,4 @@ pyautogen==0.2.29
 fastapi
 azure-storage-blob
 python-multipart
+requests-oauthlib
