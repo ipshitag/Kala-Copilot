@@ -1,9 +1,24 @@
+"""
+User Profiling Script for Artist Onboarding
+
+This script processes a conversation history to extract a structured user profile for an artist.
+It uses a language model (Cohere via LangChain) and a prompt template to generate a JSON profile,
+which includes details such as name, location, language preference, type of art, experience, and motivations.
+
+Main Components:
+- Environment setup and API key loading.
+- Pydantic model for the artist's user profile.
+- Function to generate the user profile from conversation history using a prompt and LLM.
+
+Usage:
+Run this script directly to read 'conversation_history.txt' and output a structured user profile in JSON format.
+"""
 ## import dependencies
 from langchain_cohere import ChatCohere
 from langchain_core.output_parsers import JsonOutputParser
 from pydantic import BaseModel, Field
 from langchain.prompts import PromptTemplate
-from json import dumps
+import json
 
 ## environment setup
 import os
@@ -21,8 +36,17 @@ class UserProfile(BaseModel):
     why_they_want_to_be_online: str = Field(description="The artist's motivation for building an online presence (e.g., reach more people, earn better)", default="Unknown")
     is_open_to_custom_orders: bool = Field(description="Whether the artist is willing to take on commissions or personalized art requests")
 
-def get_final_user_profile(conversation_history: str):
-    with open(r"C:\Users\souga\Downloads\_Github_local\Retail-Copilot-Hackathon\src\tools\prompts\final-output-system-prompt.txt", "r") as file:
+def get_final_user_profile(conversation_history: str) -> str:
+    """
+    Generate a structured user profile for the artist based on the provided conversation history.
+
+    Args:
+        conversation_history (str): The full text history of the onboarding conversation.
+
+    Returns:
+        str: The user profile as a JSON-formatted string.
+    """
+    with open(r"prompts/final-output-system-prompt.txt", "r") as file:
         system_prompt_template = file.read()
     parser = JsonOutputParser(pydantic_object=UserProfile)
     final_system_prompt = PromptTemplate(
@@ -33,10 +57,10 @@ def get_final_user_profile(conversation_history: str):
     chatmodel = ChatCohere()
     chain = final_system_prompt | chatmodel | parser
     user_profile_info = chain.invoke({"conversation_history": conversation_history})
-    return dumps(user_profile_info)    
+    return json.dumps(user_profile_info)    
 
 if __name__=="__main__":
-    with open("conversation_history.txt", "r") as file:
+    with open("example_delete_later\conversation_history.txt", "r") as file:
         ch = file.read()
     user_profile_json = get_final_user_profile(ch)
     print(user_profile_json)

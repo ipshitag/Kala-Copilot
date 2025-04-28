@@ -12,35 +12,41 @@
 
 ## Contents
 1. [Problem](#1-problem)  
-2. [Solution: Kálā Copilot](#2-solution-kálā-copilot)   
-   2. [How does it work under the hood?](21-how-does-it-work-under-the-hood)  
-3. [Who is it for?](#3-who-is-it-for)  
-4. [Business Relevance](#4-business-relevance)  
-5. [Technical Overview](#5-technical-overview)  
-   1. [Modular Agents: The Brains Behind Kálā Copilot](#51-modular-agents-the-brains-behind-kálā-copilot)
-   2. [Workflow](#52-workflow)  
+2. [Solution: Kálā Copilot](#2-solution-kálā-copilot)
+   1. [How does it work under the hood?](21-how-does-it-work-under-the-hood)  
+4. [Who is it for?](#3-who-is-it-for)  
+5. [Business Relevance](#4-business-relevance)  
+6. [Technical Overview](#5-technical-overview)
+   1. [Why AI Agents?](#why-ai-agents)  
+   2. [Modular Agents: The Brains Behind Kálā Copilot](#51-modular-agents-the-brains-behind-kálā-copilot)
+   3. [Workflow](#52-workflow)  
       1. [User Onboarding](#521-user-onboarding)  
       2. [Product Upload Pipeline](#522-product-upload-pipeline)  
    3. [Agent Orchestration Model](#53-agent-orchestration-model)  
    4. [Technology Stack](#54-technology-stack)  
    5. [Solution Quality Highlights](#55-solution-quality-highlights)  
    6. [Future Enhancements](#56-future-enhancements)  
-6. [Inspiration & Team 🚀](#6-inspiration--team-)
+7. [Inspiration & Team 🚀](#6-inspiration--team-)
 
 ---
 
 ## 1. Problem
-India has one of the richest networks of artisans and skilled workers—people who create beautiful, high-quality products with deep cultural value. From handwoven fabrics to woodcraft and jewelry, their creations deserve global visibility.
- 
-And while mobile internet is widely available across India, the **digital world isn’t built for them**. The language barrier is real. The platforms are overwhelming. The marketing game is unfamiliar. These creators don’t have teams, strategies, or jargon. They have talent.
- 
- Their job is to create—not to figure out how to write product descriptions, generate hashtags, or design campaigns.
- 
- This isn’t just India. Across Mexico, Southeast Asia, and even rural parts of the US, millions of creators face the same challenge:  
- **the internet exists—but it doesn’t speak their language.**
- 
- In today’s world, visibility often matters more than quality.  
- And without the right tools, **millions of skilled creators remain invisible**.
+
+Millions of skilled creators around the world—artisans, craftspeople, small makers—are invisible in the digital economy.
+
+Not because they lack talent.  
+Because the internet wasn’t built for them.
+
+Platforms are complex. Marketing is a second language.  
+They don't have content teams or ad budgets. They have skill, history, and product.
+
+Today, **visibility beats quality**.  
+And without the right tools, these creators get left out of the global marketplace.
+
+This isn’t just an India problem. It's global—from Southeast Asia to Latin America to rural U.S. towns.  
+**The internet exists—but it doesn’t speak their language.**
+
+There’s a massive opportunity to unlock creativity, culture, and commerce—at scale—by building tools *for* them, not *against* them.
 
 ---
 
@@ -127,6 +133,28 @@ By lowering the barrier to online selling, it unlocks a massive user base that h
 
 ## 5. Technical Overview
 In this section, we outline the modular architecture that powers Kálā Copilot. Our system employs a chain-of-agents approach, ensuring each AI agent focuses on a specific task.
+
+But first, let's answer an important question: **Why AI agents, and not just a single large model or a traditional app?**
+
+### Why AI Agents?
+
+Kálā Copilot leverages **AI agents** to create a natural, human-friendly experience for artisans and small business owners who are not familiar with complex digital systems.
+
+Each agent is **autonomous**, meaning it specializes in a specific task—such as onboarding, visual analysis, branding, SEO optimization, or pricing—and can independently perceive user inputs, make decisions, and take actions based on its role. The agents collaborate through an orchestration layer (Microsoft Autogen) to complete complex workflows seamlessly.
+
+Instead of forcing users to fill out rigid forms or follow strict templates, Kálā Copilot agents **extract structured information** (like product details, pricing suggestions, hashtags, and descriptions) directly from **unstructured, natural inputs**—whether that’s a photo, a voice message, or casual text.
+
+Additionally, using **Azure AI Agents** makes the architecture highly modular and scalable. Each agent is **plug-and-play** — meaning new capabilities (e.g., real estate listings, restaurant menus, fashion styling) can be added simply by creating or swapping agents, without rewriting the core system.  
+This **reusability** ensures that Kálā Copilot can evolve into a multi-industry solution without major redevelopment.
+
+This approach ensures:
+- **Flexibility**: Users can interact naturally without needing technical knowledge.
+- **Accuracy**: Specialized agents handle tasks with domain-specific intelligence.
+- **Scalability**: New agents or industries can be added through plug-and-play extension.
+- **Resilience**: Individual agent failures do not crash the entire workflow.
+
+In short:  
+> **Instead of making users think like machines, we made machines think like users.**
 
 ### 5.1 Modular Agents: The Brains Behind Kálā Copilot
 Here’s a quick snapshot of the specialized agents:

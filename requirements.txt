@@ -9,11 +9,11 @@ python-dotenv
 openai==1.59.7
 pandas
 numpy
+langchain
+langchain-community
 langchain-cohere
 langchain-core
 openai-whisper
-langchain
-gTTS
 pvcobra
 pyaudio
 pydub
@@ -26,3 +26,6 @@ fastapi
 azure-storage-blob
 python-multipart
 requests-oauthlib
+requests-oauthlib
+azure-cosmos
+requests

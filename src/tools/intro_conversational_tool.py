@@ -1,3 +1,24 @@
+"""
+Conversational Onboarding Tool for Artists
+
+This script facilitates a voice-based onboarding conversation with an artist using a conversational AI model.
+It records the user's voice input, transcribes it, generates AI responses, and recites them using text-to-speech.
+The conversation history is maintained and saved at the end of the session.
+
+Main Components:
+- Environment setup and API key loading.
+- Pydantic model for structured AI responses.
+- Functions for speech synthesis (Azure TTS) and speech recognition (Azure Whisper + Cobra VAD).
+- Conversation loop integrating LangChain, Cohere, and prompt templates.
+
+Functions:
+- recite_model_response(text): Converts a text response to speech using Azure TTS and plays it.
+- record_and_transcribe(): Records audio from the microphone, detects end of speech, transcribes using Azure Whisper, and returns the recognized text.
+- gather_information(): Manages the conversation loop, alternating between AI and user, and returns the full conversation history.
+
+Usage:
+Run this script directly to start the onboarding session. The conversation history is saved to 'conversation_history.txt'.
+"""
 ## import dependencies
 from langchain_cohere import ChatCohere
 from langchain_core.output_parsers import JsonOutputParser
@@ -9,7 +30,6 @@ import pyaudio
 from pydub import AudioSegment
 import io
 import numpy as np
-import warnings
 import requests
 import wave
 
@@ -25,7 +45,16 @@ class Response(BaseModel):
     end_of_conversation: bool = Field(description="True if the conversation is finished else False means the conversation is to be continued")
 
 ## spech-to-text
-def recite_model_response(text):
+def recite_model_response(text) -> None:
+    """
+    Convert a given text string to speech using Azure Text-to-Speech (TTS) and play the resulting audio.
+
+    Args:
+        text (str): The text to be synthesized and spoken aloud.
+
+    Returns:
+        None
+    """
     AZURE_TTS_ENDPOINT = os.getenv("AZURE_TTS_ENDPOINT")
     AZURE_TTS_KEY = os.getenv("AZURE_TTS_KEY")
     # AZURE_TTS_LOCATION = os.getenv("AZURE_TTS_LOCATION", "eastus")
@@ -65,7 +94,14 @@ def recite_model_response(text):
         print("Azure TTS Error:", response.status_code, response.text)
 
 ## recording and text-to-speech
-def record_and_transcribe():
+def record_and_transcribe() -> str:
+    """
+    Record audio from the user's microphone, detect the end of speech using Cobra VAD,
+    and transcribe the recorded audio to text using Azure Whisper.
+
+    Returns:
+        str: The transcribed text from the user's spoken input.
+    """
     cobra = pvcobra.create(access_key=os.getenv('PVCOBRA_ACCESS_TOKEN'))
 
     ## mic recording parameters
@@ -137,10 +173,20 @@ def record_and_transcribe():
             print("Azure Whisper Error:", response.status_code, response.text)
             return ""
 
-def gather_information():
+def gather_information() -> str:
+    """
+    Conduct a conversational onboarding session with the user.
+
+    Repeatedly prompts the user for input (via speech), generates AI responses,
+    recites them, and maintains the conversation history. Ends when the AI signals
+    the end of the conversation.
+
+    Returns:
+        str: The complete conversation history as a formatted string.
+    """
     conversation_history = []
     ## set up prompt, output parser, LLM
-    with open(r"src\tools\prompts\onboarding-system-prompt.txt", "r", encoding="utf-8") as file:
+    with open(r"prompts/onboarding-system-prompt.txt", "r", encoding="utf-8") as file:
         prompt_template = file.read()
     parser = JsonOutputParser(pydantic_object=Response)
     system_prompt = PromptTemplate(
@@ -176,5 +222,5 @@ if __name__=="__main__":
    conv_history = gather_information()
    print(" Conversation History ".center(30,"-"))
    print(conv_history)
-   with open("conversation_history.txt", "w", encoding="utf-8") as file:
+   with open("example_delete_later\conversation_history.txt", "w", encoding="utf-8") as file:
     file.write(conv_history)
