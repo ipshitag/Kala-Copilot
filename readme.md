@@ -156,6 +156,14 @@ This approach ensures:
 In short:  
 > **Instead of making users think like machines, we made machines think like users.**
 
+### Architecture Diagram
+<p align="center">
+  <img src="https://github.com/ipshitag/Retail-Copilot-Hackathon/blob/main/assets/ReadmeImages/Architecture_KalaCopilot.png" 
+       alt="Kala Copilot Architecture Diagram" 
+       width="100%" />
+</p>
+
+
 ### 5.1 Modular Agents: The Brains Behind Kálā Copilot
 Here’s a quick snapshot of the specialized agents:
 
