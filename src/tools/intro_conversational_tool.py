@@ -20,7 +20,7 @@ Usage:
 Run this script directly to start the onboarding session. The conversation history is saved to 'conversation_history.txt'.
 """
 ## import dependencies
-from langchain_cohere import ChatCohere
+from langchain_openai import AzureChatOpenAI
 from langchain_core.output_parsers import JsonOutputParser
 from pydantic import BaseModel, Field
 from langchain.prompts import PromptTemplate
@@ -37,7 +37,6 @@ import wave
 import os
 from dotenv import load_dotenv
 load_dotenv()
-os.environ['COHERE_API_KEY'] = os.getenv('COHERE_API_KEY')
 
 ## define pydantic objects for structured output
 class Response(BaseModel):
@@ -194,7 +193,12 @@ def gather_information() -> str:
         input_variables=["conversation_history"],
         partial_variables={"format_instructions": parser.get_format_instructions()}
     )
-    chatmodel = ChatCohere()
+    chatmodel = AzureChatOpenAI(
+        openai_api_key=os.environ["AZURE_OPENAI_KEY"],
+        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
+        azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT"],
+        openai_api_version=os.environ["AZURE_OPENAI_API_VERSION"]
+    )
     chain = system_prompt | chatmodel | parser
 
     ## conversation loop
@@ -222,5 +226,5 @@ if __name__=="__main__":
    conv_history = gather_information()
    print(" Conversation History ".center(30,"-"))
    print(conv_history)
-   with open("example_delete_later\conversation_history.txt", "w", encoding="utf-8") as file:
+   with open(r"example_delete_later\conversation_history.txt", "w", encoding="utf-8") as file:
     file.write(conv_history)

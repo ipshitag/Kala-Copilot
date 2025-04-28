@@ -14,7 +14,7 @@ Usage:
 Run this script directly to read 'conversation_history.txt' and output a structured user profile in JSON format.
 """
 ## import dependencies
-from langchain_cohere import ChatCohere
+from langchain_openai import AzureChatOpenAI
 from langchain_core.output_parsers import JsonOutputParser
 from pydantic import BaseModel, Field
 from langchain.prompts import PromptTemplate
@@ -54,13 +54,18 @@ def get_final_user_profile(conversation_history: str) -> str:
         input_variables=["conversation_history"],
         partial_variables={"format_instructions": parser.get_format_instructions()}
     )
-    chatmodel = ChatCohere()
+    chatmodel = AzureChatOpenAI(
+        openai_api_key=os.environ["AZURE_OPENAI_KEY"],
+        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
+        azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT"],
+        openai_api_version=os.environ["AZURE_OPENAI_API_VERSION"]
+    )
     chain = final_system_prompt | chatmodel | parser
     user_profile_info = chain.invoke({"conversation_history": conversation_history})
     return json.dumps(user_profile_info)    
 
 if __name__=="__main__":
-    with open("example_delete_later\conversation_history.txt", "r") as file:
+    with open(r"example_delete_later\conversation_history.txt", "r") as file:
         ch = file.read()
     user_profile_json = get_final_user_profile(ch)
     print(user_profile_json)
