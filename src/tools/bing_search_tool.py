@@ -144,7 +144,7 @@ if __name__=="__main__":
     Main execution block: Reads art description from file, generates search query,
     performs Bing search, and estimates artwork price range.
     """
-    with open("example_delete_later\search-input.json", "r") as file:
+    with open(r"example_delete_later\search-input.json", "r") as file:
         image_description = file.read()
     search_query = generate_search_query(art_description=image_description)
     search_result = bing_search(search_query=search_query)
