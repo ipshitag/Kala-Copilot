@@ -20,7 +20,7 @@ Usage:
 Run this script directly to start the onboarding session. The conversation history is saved to 'conversation_history.txt'.
 """
 ## import dependencies
-from langchain_openai import AzureChatOpenAI
+from langchain_cohere import ChatCohere
 from langchain_core.output_parsers import JsonOutputParser
 from pydantic import BaseModel, Field
 from langchain.prompts import PromptTemplate
@@ -193,12 +193,7 @@ def gather_information() -> str:
         input_variables=["conversation_history"],
         partial_variables={"format_instructions": parser.get_format_instructions()}
     )
-    chatmodel = AzureChatOpenAI(
-        openai_api_key=os.environ["AZURE_OPENAI_KEY"],
-        azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
-        azure_deployment=os.environ["AZURE_OPENAI_DEPLOYMENT"],
-        openai_api_version=os.environ["AZURE_OPENAI_API_VERSION"]
-    )
+    chatmodel = ChatCohere()
     chain = system_prompt | chatmodel | parser
 
     ## conversation loop
