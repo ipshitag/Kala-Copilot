@@ -1,0 +1,176 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+  .step-container {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    margin: 0; /* Remove default margin */
+  }
+  .image-container {
+    position: sticky;
+    top: 0;
+    width: 40%;
+    max-width: 600px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
+  }
+  .image-container h2 {
+    margin-bottom: 20px;
+  }
+  .image-container img {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  .description-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    height: 100%; /* Ensure it takes full height */
+  }
+  .description-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  #result p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  #feedback-section textarea {
+    resize: none;
+  }
+  .btn {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    text-align: center;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .btn-purple {
+    background-color: #6f42c1;
+  }
+  .btn-purple:hover {
+    background-color: #5a33a8;
+  }
+  .btn-primary {
+    background-color: #007bff;
+  }
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  .btn-secondary {
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border: 1px solid #e4e4e4;
+  }
+  .btn-secondary:hover {
+    background-color: #e4e4e4;
+  }
+  .loader {
+    display: none;
+  }
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .step-container {
+      flex-direction: column;
+    }
+    .image-container {
+      width: 100%;
+      max-width: 100%;
+      border-right: none;
+      border-bottom: 1px solid #e4e4e4;
+      padding-bottom: 20px;
+    }
+    .description-container {
+      width: 100%;
+      max-width: 100%;
+    }
+  }
+</style>
+<div class="step-container">
+  <!-- Image Section -->
+  <div class="image-container">
+    <h2>Step 2: Visual Insight Agent</h2>
+    <img src="{{ blob_url }}" alt="Uploaded image" />
+    <a href="{{ url_for('upload') }}" class="btn btn-secondary mt-3">Upload a different image</a>
+  </div>
+  <!-- Description Section -->
+  <div class="description-container">
+    <div id="result">
+      <!-- Placeholder for generated description -->
+    </div>
+    <!-- Loader -->
+    <div class="loader" id="loader">
+      <p>Generating Insight...</p>
+    </div>
+    <!-- Action Buttons -->
+    <div>
+      <button id="btn-generate" class="btn btn-purple w-100 mb-3">Generate Visual Insight</button>
+      <div id="feedback-section" style="display:none;">
+        <label for="additional-feedback" class="form-label">Additional Feedback (Optional):</label>
+        <textarea id="additional-feedback" class="form-control mb-3" rows="3" placeholder="Enter your feedback here"></textarea>
+        <button id="btn-regenerate" class="btn btn-purple w-100">Regenerate with Feedback</button>
+      </div>
+      <button id="btn-next" class="btn btn-purple w-100 mt-3" 
+      data-next-url="{{ url_for('step3') }}" style="display:none;">
+        Next Step
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+  const imageDescription = "{{ imageDescription }}";
+  function showLoader() {
+    document.getElementById("loader").style.display = "block";
+  }
+  function hideLoader() {
+    document.getElementById("loader").style.display = "none";
+  }
+  document.getElementById("btn-generate").addEventListener("click", () => {
+    generateInsight();
+  });
+  document.getElementById("btn-regenerate").addEventListener("click", () => {
+    const feedback = document.getElementById("additional-feedback").value;
+    generateInsight(feedback);
+  });
+  function generateInsight(feedback = '') {
+    showLoader();
+    fetch("/generate_insight", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ 
+        imageUrl: "{{ blob_url }}",
+        feedback: feedback 
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      hideLoader();
+      if (data.error) throw data.error;
+      document.getElementById("result").innerHTML = `
+        <p><strong>Insight:</strong> ${data.visual_insight}</p>`;
+      document.getElementById("btn-generate").style.display = "none";
+      document.getElementById("feedback-section").style.display = "block";
+      document.getElementById("btn-next").style.display = "block";
+    })
+    .catch(error => {
+      hideLoader();
+      document.getElementById("result").textContent = "Error: " + error;
+    });
+  }
+  document.getElementById("btn-next").addEventListener("click", function() {
+    const nextUrl = this.getAttribute("data-next-url");
+    window.location.href = nextUrl;
+  });
+</script>
+{% endblock %}
