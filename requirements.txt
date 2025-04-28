@@ -1,7 +1,7 @@
-azure-monitor-opentelemetry 
-azure-ai-inference[opentelemetry] 
+azure-monitor-opentelemetry
+azure-ai-inference[opentelemetry]
 opentelemetry-sdk
-opentelemetry-exporter-otlp 
+opentelemetry-exporter-otlp
 opentelemetry-instrumentation-httpx
 azure-ai-projects
 azure-identity
@@ -26,6 +26,8 @@ fastapi
 azure-storage-blob
 python-multipart
 requests-oauthlib
-requests-oauthlib
 azure-cosmos
 requests
+langchain-openai
+dotenv
+azure-cognitiveservices-speech

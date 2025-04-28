@@ -61,7 +61,7 @@ def recite_model_response(text) -> None:
     url = f"{AZURE_TTS_ENDPOINT}/cognitiveservices/v1"
     ssml = f"""
     <speak version='1.0' xml:lang='en-US'>
-        <voice name='en-IN-PrabhatNeural'>{text}</voice>
+        <voice name='en-US-AvaMultilingualNeural'>{text}</voice>
     </speak>
     """
     headers = {
@@ -186,7 +186,7 @@ def gather_information() -> str:
     """
     conversation_history = []
     ## set up prompt, output parser, LLM
-    with open(r"prompts/onboarding-system-prompt.txt", "r", encoding="utf-8") as file:
+    with open(r"src\tools\prompts\onboarding-system-prompt.txt", "r", encoding="utf-8") as file:
         prompt_template = file.read()
     parser = JsonOutputParser(pydantic_object=Response)
     system_prompt = PromptTemplate(
