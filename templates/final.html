@@ -5,18 +5,47 @@
     opacity: 0;
     transition: opacity 0.4s ease;
   }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  }
+  .content-section {
+    margin-bottom: 20px;
+  }
+  .content-section p {
+    margin: 10px 0;
+  }
 </style>
-  <h2>Final Output</h2>
+<div class="container">
+  <div class="content-section">
+    <h2>Final Output</h2>
+  </div>
   {% if blob_url %}
-    <img src="{{ blob_url }}" alt="Uploaded image" style="max-height:150px;" class="img-fluid d-block mx-auto mb-3">
+    <div class="content-section">
+      <img src="{{ blob_url }}" alt="Uploaded image" style="max-height:150px;" class="img-fluid d-block mx-auto mb-3">
+    </div>
   {% endif %}
-  <p><strong>Image Description (Step 1):</strong> {{ image_description }}</p>
-  <p><strong>Visual Agent Result (Step 2):</strong> {{ visual_agent_result }}</p>
-  <p><strong>Branding Agent Result (Step 3):</strong> {{ branding_agent_result }}</p>
-  <p><strong>SEO Agent Result (Step 4):</strong> {{ seo_agent_result }}</p>
-  <p><strong>Cataloger Agent Result (Step 5):</strong> {{ cataloger_agent_result }}</p>
-  <br>
-  <a href="{{ url_for('index') }}" class="btn btn-purple" id="go-home">Go Home</a>
+  <div class="content-section">
+    <p><strong>Image Description (Step 1):</strong> {{ image_description }}</p>
+  </div>
+  <div class="content-section">
+    <p><strong>Visual Agent Result (Step 2):</strong> {{ visual_agent_result }}</p>
+  </div>
+  <div class="content-section">
+    <p><strong>Branding Agent Result (Step 3):</strong> {{ branding_agent_result }}</p>
+  </div>
+  <div class="content-section">
+    <p><strong>SEO Agent Result (Step 4):</strong> {{ seo_agent_result }}</p>
+  </div>
+  <div class="content-section">
+    <p><strong>Cataloger Agent Result (Step 5):</strong> {{ cataloger_agent_result }}</p>
+  </div>
+  <div class="content-section">
+    <a href="{{ url_for('index') }}" class="btn btn-purple" id="go-home">Go Home</a>
+  </div>
+</div>
 <script>
 document.getElementById('go-home').addEventListener('click', function(e) {
   document.body.classList.add('fade-out');

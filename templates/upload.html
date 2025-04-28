@@ -1,5 +1,45 @@
 {% extends "layout.html" %}
 {% block content %}
+<style>
+  .fade-out {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    position: relative; /* Add this to make the absolute positioning work */
+  }
+  .image-container {
+    margin-bottom: 20px;
+  }
+  .drop-area {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .drop-area:hover {
+    border-color: #999;
+  }
+  .sample-images {
+    position: absolute;
+    bottom: 20px; /* Position at the bottom */
+    right: 20px; /* Align to the right */
+  }
+  .sample-images h3 {
+    margin-bottom: 10px;
+  }
+  .sample-images img {
+    width: 100px;
+    height: auto;
+    margin: 5px;
+  }
+</style>
+<div class="container">
   <h2>Step 0: Upload Image</h2>
   {% if error %}
     <div class="alert alert-danger">{{ error }}</div>
@@ -9,7 +49,86 @@
       <input type="file" name="image_file" class="form-control mb-3" accept="image/*" />
       <button type="submit" class="btn btn-purple btn-lg w-100">Upload Image</button>
   </form>
-  <div class="mt-2">
-    <a href="{{ url_for('index') }}" class="text-secondary">Back to Home</a>
+  <div class="mt-5">
+    <h3></h3>
+    <div class="drop-area" id="drop-area">
+      <p>Drag and drop images here or click to select files</p>
+    </div>
   </div>
+  <div class="sample-images">
+    <h3>SAMPLE IMAGES:</h3>
+    <img src="https://i.ibb.co/d40bmFNh/image2-imresizer.jpg" alt="Sample Image 1">
+    <img src="https://i.ibb.co/sJD6f9yn/wood-Carved.jpg" alt="Sample Image 2">
+    <img src="https://i.ibb.co/zVByBfdC/Madubani.jpg" alt="Sample Image 3">
+    <img src="https://i.ibb.co/DSzvtCV/wood-Elephant.jpg" alt="Sample Image 4">
+  </div>
+</div>
+<script>
+const dropArea = document.getElementById('drop-area');
+
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+  dropArea.addEventListener(eventName, preventDefaults, false);
+  document.body.addEventListener(eventName, preventDefaults, false);
+});
+
+function preventDefaults(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+['dragenter', 'dragover'].forEach(eventName => {
+  dropArea.addEventListener(eventName, highlight, false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+  dropArea.addEventListener(eventName, unhighlight, false);
+});
+
+function highlight() {
+  dropArea.classList.add('highlight');
+}
+
+function unhighlight() {
+  dropArea.classList.remove('highlight');
+}
+
+dropArea.addEventListener('drop', handleDrop, false);
+
+function handleDrop(e) {
+  let dt = e.dataTransfer;
+  let files = dt.files;
+  handleFiles(files);
+}
+
+function handleFiles(files) {
+  for (let i = 0; i < files.length; i++) {
+    let file = files[i];
+    if (file.type.startsWith('image/')) {
+      let formData = new FormData();
+      formData.append('image_file', file);
+      fetch('{{ url_for("upload") }}', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.body.classList.add('fade-out');
+          setTimeout(() => {
+            window.location.href = "{{ url_for('upload') }}";
+          }, 400);
+        } else {
+          alert('Error uploading image');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error uploading image');
+      });
+    } else {
+      alert('Please upload a valid image file');
+    }
+  }
+}
+</script>
 {% endblock %}

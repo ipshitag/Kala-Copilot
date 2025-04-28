@@ -5,10 +5,25 @@
     opacity: 0;
     transition: opacity 0.4s ease;
   }
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  .image-container {
+    margin-bottom: 20px;
+  }
 </style>
-<h1 class="text-center mb-4">Welcome to Kala Copilot</h1>
-<div class="text-center">
-  <a href="{{ url_for('upload') }}" class="btn btn-purple btn-lg" id="start-upload">Start by Uploading an Image</a>
+<div class="container">
+  <div class="image-container">
+    <img src="https://i.ibb.co/Gf2Lg1S5/Punjabi-Phulkari-imresizer.jpg" alt="Punjabi Phulkari" style="max-width: 100%; height: auto;">
+  </div>
+  <h1 class="text-center mb-4">Welcome to Kala Copilot</h1>
+  <div class="text-center">
+    <a href="{{ url_for('upload') }}" class="btn btn-purple btn-lg" id="start-upload">Start by Uploading an Image</a>
+  </div>
 </div>
 <script>
 document.getElementById('start-upload').addEventListener('click', function(e) {
