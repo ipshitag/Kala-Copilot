@@ -214,8 +214,9 @@ Kálā Copilot uses a **chain-based orchestration** where agents process tasks i
 | Azure CosmosDB             | Stores user/product data securely                      |
 | Azure WebApp Service       | Hosts the frontend/backend                              |
 | Azure Speech Service       | Enables voice-based onboarding                          |
+| Azure Storage              | Saves uploaded data                                     |
 | Twitter API                | Publishes marketing content                             |
-| GitHub Copilot             | Provided some code suggestions, then vanished mysteriously 👀 |
+| GitHub Copilot             | Some help here and there  👀 |
 
 ---
 
