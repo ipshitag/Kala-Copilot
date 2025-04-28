@@ -1,46 +1,48 @@
 {% extends "layout.html" %}
 {% block content %}
 <style>
-  /* Fade-out for transitions */
-  .fade-out {
-    opacity: 0;
-    transition: opacity 0.4s ease;
+  .step-container {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+    margin: 0; /* Remove default margin */
   }
-
-  /* Loader */
-  .loader {
-    display: none;
-    text-align: center;
-    margin-top: 20px;
+  .image-container {
+    position: sticky;
+    top: 0;
+    width: 40%;
+    max-width: 600px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 8px;
   }
-
-  .loader p {
+  .image-container h2 {
+    margin-bottom: 20px;
+  }
+  .image-container img {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  .description-container {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    height: 100%; /* Ensure it takes full height */
+  }
+  .description-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  #result p {
     font-size: 1rem;
-    font-weight: 600;
-    color: #6f42c1;
-    margin-top: 10px;
+    line-height: 1.6;
   }
-
-  .loader span {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    border: 3px solid #6f42c1;
-    border-top: 3px solid transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
+  #feedback-section textarea {
+    resize: none;
   }
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  /* Button Styles */
   .btn {
     border: none;
     border-radius: 8px;
@@ -52,124 +54,119 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
-
   .btn-purple {
     background-color: #6f42c1;
   }
-
   .btn-purple:hover {
     background-color: #5a33a8;
   }
-
-  /* Title */
-  h2 {
-    font-size: 1.75rem;
-    text-align: center;
-    margin-bottom: 20px;
-    font-weight: 600;
-    color: #333;
+  .btn-primary {
+    background-color: #007bff;
   }
-
-  p {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: #444;
-    text-align: center;
+  .btn-primary:hover {
+    background-color: #0056b3;
   }
-
-  textarea {
-    border-radius: 8px;
-    font-size: 1rem;
-    padding: 10px;
-    width: 100%;
-    margin-top: 10px;
+  .btn-secondary {
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border: 1px solid #e4e4e4;
   }
-
-  textarea:focus {
-    outline: none;
-    border-color: #6f42c1;
-    box-shadow: 0 0 5px rgba(111, 66, 193, 0.5);
+  .btn-secondary:hover {
+    background-color: #e4e4e4;
   }
-
+  .loader {
+    display: none;
+  }
   /* Responsive Adjustments */
   @media (max-width: 768px) {
-    h2 {
-      font-size: 1.5rem;
+    .step-container {
+      flex-direction: column;
+    }
+    .image-container {
+      width: 100%;
+      max-width: 100%;
+      border-right: none;
+      border-bottom: 1px solid #e4e4e4;
+      padding-bottom: 20px;
+    }
+    .description-container {
+      width: 100%;
+      max-width: 100%;
     }
   }
 </style>
-
-<div class="container">
-  <h2>Step 4: SEO Agent</h2>
-  
-  <!-- Display Branding Agent Results -->
-  <p><strong>Branding Agent Result:</strong> {{ branding_agent_result }}</p>
-
-  <!-- Feedback Input Section -->
-  <div class="mt-3">
-    <textarea id="feedbackInput" class="form-control" rows="3" placeholder="Provide additional feedback (optional)"></textarea>
-    <button id="btn-generate" class="btn btn-purple btn-lg w-100 mt-3">Generate SEO Copy</button>
+<div class="step-container">
+  <!-- Image Section -->
+  <div class="image-container">
+    <h2>Step 4: SEO Agent</h2>
+    <img src="{{ blob_url }}" alt="Uploaded image" />
+    <a href="{{ url_for('upload') }}" class="btn btn-secondary mt-3">Upload a different image</a>
   </div>
-
-  <!-- Loader Section -->
-  <div class="loader" id="loader">
-    <span></span>
-    <p>Generating SEO Copy...</p>
+  <!-- Description Section -->
+  <div class="description-container">
+    <div id="result">
+      <!-- Placeholder for generated SEO -->
+    </div>
+    <!-- Loader -->
+    <div class="loader" id="loader">
+      <p>Inspecting SEO...</p>
+    </div>
+    <!-- Action Buttons -->
+    <div>
+      <button id="btn-generate" class="btn btn-purple w-100 mb-3">Inspect SEO</button>
+      <div id="feedback-section" style="display:none;">
+        <label for="additional-feedback" class="form-label">Additional Feedback (Optional):</label>
+        <textarea id="additional-feedback" class="form-control mb-3" rows="3" placeholder="Enter your feedback here"></textarea>
+        <button id="btn-regenerate" class="btn btn-purple w-100">Regenerate with Feedback</button>
+      </div>
+      <button id="btn-next" class="btn btn-purple w-100 mt-3" 
+              data-next-url="{{ url_for('step5') }}" style="display:none;">
+        Next Step
+      </button>
+    </div>
   </div>
-
-  <!-- Result Section -->
-  <div id="result" class="mt-3"></div>
-
-  <!-- Next Step Button -->
-  <button id="btn-next" class="btn btn-purple btn-lg mt-3 w-100" style="display:none;" data-next-url="{{ url_for('step5') }}">
-    Next Step
-  </button>
 </div>
-
 <script>
-  // Show Loader Function
   function showLoader() {
     document.getElementById("loader").style.display = "block";
   }
-
-  // Hide Loader Function
   function hideLoader() {
     document.getElementById("loader").style.display = "none";
   }
-
-  // Event Listener for Generate SEO Copy
   document.getElementById("btn-generate").addEventListener("click", () => {
-    const feedback = document.getElementById("feedbackInput").value; // Fetch feedback value
+    generateOrRegenerateSEO(false); // Initial SEO generation
+  });
+  document.getElementById("btn-regenerate").addEventListener("click", () => {
+    generateOrRegenerateSEO(true); // SEO regeneration with feedback
+  });
+  function generateOrRegenerateSEO(isFeedback) {
+    const feedback = isFeedback ? document.getElementById("additional-feedback").value : "";
     showLoader();
-
     fetch("/generate_seo", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ feedback: feedback })
+      body: JSON.stringify({ feedback: feedback, isFeedback: isFeedback })
     })
       .then(response => response.json())
       .then(data => {
         hideLoader();
-        // Display Result
+        if (data.error) throw data.error;
         document.getElementById("result").innerHTML =
-          `<p><strong>SEO Agent Result:</strong> ${data.seo_copy}</p>`;
-        // Update Button States
-        document.getElementById("btn-generate").textContent = "Regenerate SEO Copy";
-        document.getElementById("btn-next").style.display = "block";
+          `<p><strong>SEO:</strong> ${data.seo_copy}</p>`;
+        if (!isFeedback) {
+          document.getElementById("btn-generate").style.display = "none";
+          document.getElementById("feedback-section").style.display = "block";
+          document.getElementById("btn-next").style.display = "block";
+        }
       })
       .catch(error => {
         hideLoader();
         document.getElementById("result").textContent = "Error: " + error;
       });
-  });
-
-  // Fade-out on Next Step
+  }
   document.getElementById("btn-next").addEventListener("click", function() {
     const nextUrl = this.getAttribute("data-next-url");
-    document.body.classList.add("fade-out");
-    setTimeout(function() {
-      window.location.href = nextUrl;
-    }, 400);
+    window.location.href = nextUrl;
   });
 </script>
 {% endblock %}

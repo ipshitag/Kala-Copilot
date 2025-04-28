@@ -96,7 +96,7 @@ def step1():
 @app.route("/generate_description", methods=["POST"])
 def generate_description():
     data = request.get_json()
-    blob_url = data.get("imageUrl")
+    blob_url = session.get("image_blob_url")
     if not blob_url:
         return jsonify({"error": "No image URL provided."}), 400
     feedback = data.get("feedback", "")  # Capture additional feedback if provided
@@ -117,7 +117,7 @@ def generate_description():
 # -------------------------------
 @app.route("/step2", methods=["GET"])
 def step2():
-    blob_url = session.get("blob_url", "")
+    blob_url = session.get("image_blob_url")
     image_description = session.get("image_description", "")
     if not image_description:
         # If no description found, redirect back so user can generate it
@@ -127,6 +127,7 @@ def step2():
 @app.route("/generate_insight", methods=["POST"])
 def generate_insight():
     data = request.get_json()
+    blob_url = session.get("image_blob_url")
     image_description = session.get("image_description")
     feedback = session.get("feedback", "")  # Capture additional feedback if provided
 
@@ -157,15 +158,17 @@ def generate_insight():
 # -------------------------------
 @app.route("/step3", methods=["GET"])
 def step3():
+    blob_url = session.get("image_blob_url")
     if "visual_agent_result" not in session:
         return redirect(url_for("step2"))
     return render_template(
         "step3.html",
-        visual_agent_result=session["visual_agent_result"]
+        visual_agent_result=session["visual_agent_result"],blob_url=blob_url
     )
 
 @app.route("/generate_branding", methods=["POST"])
 def generate_branding():
+    blob_url = session.get("image_blob_url")
     visual_result = session.get("visual_agent_result")
     data = request.get_json()
     feedback = data.get("feedback", "")
@@ -194,11 +197,13 @@ def generate_branding():
 # -------------------------------
 @app.route("/step4", methods=["GET"])
 def step4():
+    blob_url = session.get("image_blob_url")
     if "branding_agent_result" not in session:
         return redirect(url_for("step3"))
     return render_template(
         "step4.html",
-        branding_result=session["branding_agent_result"]
+        branding_result=session["branding_agent_result"],
+        blob_url=blob_url
     )
 
 @app.route("/generate_seo", methods=["POST"])
