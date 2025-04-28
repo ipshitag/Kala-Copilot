@@ -26,6 +26,8 @@ from pydantic import BaseModel, Field
 from langchain.prompts import PromptTemplate
 from langchain_core.messages import HumanMessage, AIMessage, get_buffer_string
 import pvcobra
+import asyncio
+from azure_agent_wrapper import onboarding_agent
 import pyaudio
 from pydub import AudioSegment
 import io
@@ -185,7 +187,7 @@ def gather_information() -> str:
     """
     conversation_history = []
     ## set up prompt, output parser, LLM
-    with open(r"src\tools\prompts\onboarding-system-prompt.txt", "r", encoding="utf-8") as file:
+    with open(r"src\tools\prompts\OnboardingMayaPrompt.txt", "r", encoding="utf-8") as file:
         prompt_template = file.read()
     parser = JsonOutputParser(pydantic_object=Response)
     system_prompt = PromptTemplate(
@@ -222,9 +224,26 @@ def gather_information() -> str:
     
     return get_buffer_string(conversation_history)
 
+async def run_agent(agent, task_template, message_source, input_text):
+    task = task_template.format(input_text)
+    result = await agent.run(task=task)
+    for message in result.messages:
+        if getattr(message, "source", None) == message_source:
+            return message.content
+
 if __name__=="__main__":
    conv_history = gather_information()
    print(" Conversation History ".center(30,"-"))
    print(conv_history)
-   with open(r"example_delete_later\conversation_history.txt", "w", encoding="utf-8") as file:
-    file.write(conv_history)
+   onboarding_agent_template = "Save the data of the following user: {}"
+   onboarding_agent_result = asyncio.run(
+    run_agent(
+        agent=onboarding_agent,
+        task_template=onboarding_agent_template,
+        message_source="onboarding_agent",
+        input_text=conv_history
+    )
+)
+
+#    with open(r"example_delete_later\conversation_history.txt", "w", encoding="utf-8") as file:
+#     file.write(conv_history)

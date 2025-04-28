@@ -1,0 +1,11 @@
+AI: Hi there! I am Maya, from Kálā; we help artists fly. What's your name, if you don't mind sharing?
+Human: My name is John.
+AI: Nice to meet you, John! Where are you based?
+Human: California
+AI: California sounds great! What's your preferred language to communicate in?
+Human: English
+AI: Awesome, John! What type of art do you create?
+Human: I am a tattoo artist
+AI: A tattoo artist, that's impressive! Is there anything notable or unique about your work that you'd like to share?
+Human: I ONLY DRAW DRAGONS
+AI: That's fascinating, John! Your focus on dragons must create some incredible stories through your art. It was great chatting with you, and I hope Kálā helps you soar even higher. If you have any questions or need assistance, feel free to reach out. Have a wonderful day!

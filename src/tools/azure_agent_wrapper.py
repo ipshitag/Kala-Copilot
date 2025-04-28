@@ -4,7 +4,7 @@ from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 from pathlib import Path
 import time
-from src.tools.agent_tools import add_product_to_cosmos,add_users_to_cosmos
+from agent_tools import add_product_to_cosmos,add_users_to_cosmos
 import os
 from azure.core.exceptions import HttpResponseError
 

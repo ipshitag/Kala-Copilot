@@ -8,6 +8,12 @@ Onboarding Agent Guidelines
 Onboarding Agent Tool
 -----
 1. add_users_to_cosmos: Accepts parameters which are to be ingested.
+    user_name: str, (Name of the user)
+    user_forte: str, (What type of art they do)
+    user_id: str, (Generate this, something memorable)
+    user_place: str, (Place where user lives)
+    user_language: (str), (Users preferred language)
+    user_notes: str, (Anything notable they have, otherwise put NA)
 
 Content Handling Guidelines
 ---------------------------
