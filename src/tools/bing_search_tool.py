@@ -20,19 +20,11 @@ os.environ["AZURE_OPENAI_ENDPOINT"] = os.getenv("AZURE_OPENAI_ENDPOINT")
 os.environ["AZURE_OPENAI_API_VERSION"] = os.getenv("AZURE_OPENAI_API_VERSION")
 os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"] = os.getenv("AZURE_OPENAI_DEPLOYMENT")
 
-def reformat_input(art_description: str) -> str:
-    """
-    Reformat input art description JSON to include only productName and productDescription fields.
-    """
-    art_description = json.loads(art_description)
-    return json.dumps({key: art_description[key] for key in ["productName", "productDescription"]})
-
 def generate_search_query(art_description: str) -> str:
     """
     Generate a search query string from the given art description using Azure OpenAI and a prompt template.
     """
     print("Generating search query...")
-    art_description = reformat_input(art_description)
     # object for structured output
     class BingSearchQuery(BaseModel):
         search_query: str = Field(description="LLM generated search query based on the art description provided")
@@ -96,8 +88,8 @@ def get_art_price_range(search_results: Dict) -> Dict:
     """
     class Artprice(BaseModel):
         reasoning: str = Field(description="Brief explanation of how the price range was determined based on the search results.")
-        minimum_price: float = Field(description="Estimated minimum price of the artwork in Indian Rupees (INR).")
-        maximum_price: float = Field(description="Estimated maximum price of the artwork in Indian Rupees (INR).")
+        minimum_price: float = Field(description="Estimated minimum price of the artwork in USD.")
+        maximum_price: float = Field(description="Estimated maximum price of the artwork in USD.")
     parser = JsonOutputParser(pydantic_object=Artprice)
     with open(r"prompts/final-bing-search-prompt.txt", "r") as file:
         system_prompt_template = file.read()
@@ -114,13 +106,12 @@ def get_art_price_range(search_results: Dict) -> Dict:
     )
     chain = prompt | llm | parser
     results = chain.invoke({"search_results": json.dumps(search_results)})
-    dollar_exchange_rate = 85
-    results['minimum_price'] = round(results.get("minimum_price", 0)/dollar_exchange_rate, 0)
-    results['maximum_price'] = round(results.get("maximum_price", 0)/dollar_exchange_rate, 0)
+    # dollar_exchange_rate = 85
+    # results['minimum_price'] = round(results.get("minimum_price", 0)/dollar_exchange_rate, 0)
+    # results['maximum_price'] = round(results.get("maximum_price", 0)/dollar_exchange_rate, 0)
     return results
 
 def estimate_art_price_range(image_description: str):
-    print("i am here")
     """
     End-to-end pipeline: Takes in an art description, generates a Bing search query,
     performs the search, and returns the estimated art price range and reasoning.
