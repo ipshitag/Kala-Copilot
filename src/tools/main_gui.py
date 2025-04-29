@@ -21,7 +21,7 @@ def record_and_transcribe(stop_event: threading.Event) -> str:
     """
     Same as your old function, but returns "" immediately if stop_event is set.
     """
-    cobra = pvcobra.create(access_key=os.getenv('PVCOBRA_ACCESS_TOKEN'))
+    cobra = pvcobra.create(access_key="KFgQP1ckC6l64TJ61gWrPaCeh5Es7lsTTD4f1Jg1QaOTSrelnx+iow==")
     FORMAT, CHANNELS, RATE, FRAMES_PER_BUFFER = pyaudio.paInt16, 1, 16000, 512
     audio = pyaudio.PyAudio()
     stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE,

@@ -11,6 +11,7 @@ from src.tools.azure_agent_wrapper import (
     cataloger_agent,
     onboarding_agent,
     visual_insight_agent,
+    pricing_agent,
     seo_agent,
     user_proxy,
     planning_agent,
@@ -231,20 +232,63 @@ def generate_seo():
         return jsonify({"error": str(e)}), 500
 
 # -------------------------------
-# STEP 5: CATALOGER AGENT
+# STEP 5: PRICING AGENT
 # -------------------------------
 @app.route("/step5", methods=["GET"])
 def step5():
+    blob_url = session.get("image_blob_url")
+    image_description = session.get("image_description", "")
     if "seo_agent_result" not in session:
         return redirect(url_for("step4"))
     return render_template(
         "step5.html",
-        seo_result=session["seo_agent_result"]
+        seo_result=session["seo_agent_result"],
+        blob_url=blob_url,
+        image_description=image_description
+    )
+
+@app.route("/generate_price", methods=["POST"])
+def generate_price():
+    image_description = session.get("image_description")
+    data = request.get_json()
+    feedback = data.get("feedback", "")  # Now accepting feedback
+    if not image_description:
+        return jsonify({"error": "No image description in session."}), 400
+    try:
+        price_cmd = "Get the pricing based on the following description: {}"
+        if feedback:  # If there's feedback, include it
+            price_cmd += f"\n\nFeedback: {feedback}"
+        pricing_agent_res = asyncio.run(
+            run_agent(
+                agent=pricing_agent,
+                task_template=price_cmd,
+                message_source="pricing_agent",
+                input_text=image_description
+            )
+        )
+        print(pricing_agent_res)
+        session["pricing_agent_result"] = pricing_agent_res
+        return jsonify({"pricing_copy": pricing_agent_res})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# -------------------------------
+# STEP 5: CATALOGER AGENT
+# -------------------------------
+@app.route("/step6", methods=["GET"])
+def step6():
+    if "seo_agent_result" not in session:
+        return redirect(url_for("step5"))
+    return render_template(
+        "step6.html",
+        seo_result=session["seo_agent_result"],
+        price_result=session.get("pricing_agent_result", ""),
     )
 
 @app.route("/generate_catalog", methods=["POST"])
 def generate_catalog():
     seo_res = session.get("seo_agent_result")
+    price_result = session.get("pricing_agent_result")
     data = request.get_json()
     feedback = data.get("feedback", "")  # Capture additional feedback from the request
     blob_url = session.get("image_blob_url", "")
@@ -252,6 +296,7 @@ def generate_catalog():
         return jsonify({"error": "No SEO result in session."}), 400
     try:
         catalog_cmd = "Create a product catalog entry based on the following copy: {}"
+        catalog_cmd += f"\n\nPricing: {price_result}"
         if feedback:  # Add feedback to the command if present
             catalog_cmd += f"\n\nFeedback: {feedback}"
         catalog_cmd = catalog_cmd + f"\n\nImage URL: {blob_url}"
@@ -274,7 +319,7 @@ def generate_catalog():
 @app.route("/final", methods=["GET"])
 def final():
     if "cataloger_agent_result" not in session:
-        return redirect(url_for("step5"))
+        return redirect(url_for("step7"))
     blob_url = session.get("image_blob_url", "")
     return render_template(
         "final.html",
@@ -283,6 +328,7 @@ def final():
         visual_agent_result=session.get("visual_agent_result", ""),
         branding_agent_result=session.get("branding_agent_result", ""),
         seo_agent_result=session.get("seo_agent_result", ""),
+        pricing_agent_result=session.get("pricing_agent_result", ""),
         cataloger_agent_result=session.get("cataloger_agent_result", "")
     )
 

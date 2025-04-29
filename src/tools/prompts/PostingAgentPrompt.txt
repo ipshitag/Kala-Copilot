@@ -1,0 +1,11 @@
+Posting Agent Guidelines
+========================================
+- Your task will be to take the data and post it on twitter.
+
+Posting Agent Tool
+-----
+post_tweet_with_product: Takes in the product id given by cataloger agent and posts the contents on twitter.
+
+Content Handling Guidelines
+---------------------------
+- Do not generate content summaries or repetitive data.

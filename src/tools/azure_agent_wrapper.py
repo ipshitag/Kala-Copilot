@@ -4,7 +4,9 @@ from azure.identity import DefaultAzureCredential
 from azure.ai.projects import AIProjectClient
 from pathlib import Path
 import time
-from agent_tools import add_product_to_cosmos,add_users_to_cosmos
+from .agent_tools import add_product_to_cosmos,add_users_to_cosmos
+from .createAndPost import post_tweet_with_product
+from .bing_search_tool import estimate_art_price_range
 import os
 from azure.core.exceptions import HttpResponseError
 
@@ -38,6 +40,8 @@ file_path_onboarding = r"src\tools\prompts\OnboardingAgent.txt"
 file_path_visualizer = r"src\tools\prompts\VisualInsightsAgent.txt"
 file_path_seo = r"src\tools\prompts\SEO_ExpertAgent.txt"
 file_path_planning = r"src\tools\prompts\PlanningAgent.txt"
+file_path_pricing = r"src\tools\prompts\PricingAgentPrompt.txt"
+file_path_posting = r"src\tools\prompts\PostingAgentPrompt.txt"
 
 # Set your connection string (replace with your actual connection string)
 project_connection_string = os.getenv("AZURE_AI_FOUNDRY_CONNECTION_STRING")
@@ -328,6 +332,24 @@ planning_agent = AssistantAgent(
     description="An agent for planning tasks, this agent should be the first to engage to the user. This agent should not perform any tasks.",
     model_client=az_model_client,
     system_message=file_path_planning,
+)
+
+pricing_instructions = read_file(file_path_pricing)
+pricing_agent = AssistantAgent(
+    name="pricing_agent",
+    description="An agent for checking the price range of the artwork.",
+    model_client=az_model_client,
+    tools=[estimate_art_price_range],
+    system_message=pricing_instructions,
+)
+
+posting_instructions = read_file(file_path_posting)
+posting_agent = AssistantAgent(
+    name="posting_agent",
+    description="An agent for posting the product on the website.",
+    model_client=az_model_client,
+    system_message=posting_instructions,
+    tools=[post_tweet_with_product]
 )
 
 selector_prompt = """Select an agent to perform task.
