@@ -218,8 +218,10 @@ Kálā Copilot uses a **chain-based orchestration** where agents process tasks i
 |----------------------------|---------------------------------------------------------|
 | Azure AI Agent Service     | Manages modular AI agents                               |
 | Azure OpenAI               | GPT & vision models for analysis                        |
+| Cohere                     | For language understanding                              |
+| Picovoice                  | For detecting human voice                               |
 | Microsoft Autogen          | Orchestrates agent tasks                                |
-| Azure CosmosDB             | Stores user/product data securely                      |
+| Azure CosmosDB             | Stores user/product data securely                       |
 | Azure WebApp Service       | Hosts the frontend/backend                              |
 | Azure Speech Service       | Enables voice-based onboarding                          |
 | Azure Storage              | Saves uploaded data                                     |

@@ -36,6 +36,8 @@ env.bak/
 venv.bak/
 
 .deployment
+.gitignore
+.env
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
