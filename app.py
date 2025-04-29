@@ -39,7 +39,7 @@ def upload_image_to_blob(file_obj, filename):
 
 # ---- Flask App ----
 app = Flask(__name__)
-app.secret_key = "some_secret_key_for_demo"
+# app.secret_key = "some_secret_key_for_demo"
 
 async def run_agent(agent, task_template, message_source, input_text):
     task = task_template.format(input_text)
@@ -362,4 +362,5 @@ def generate_post():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 8000))
+    app.run(debug=True, host="0.0.0.0", port=port)
