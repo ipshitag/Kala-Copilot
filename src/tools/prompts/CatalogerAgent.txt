@@ -7,7 +7,7 @@ Cataloger Agent Guidelines
     - product_name (str): Product title.
     - user_id (str): User ID of the person adding the product. [Optional, fill user12]
     - product_description (str): Details of the product.
-    - price (float): Product price. [Optional, fill 0]
+    - price (float): Product price.
     - images (list of str): List of image URLs or paths.
     - category (str): Product category or type.
     - marketing_copy (str): Short, promotional copy.

@@ -29,7 +29,7 @@ def generate_search_query(art_description: str) -> str:
     class BingSearchQuery(BaseModel):
         search_query: str = Field(description="LLM generated search query based on the art description provided")
 
-    with open("prompts/search-query-formation-prompt.txt", "r") as file:
+    with open(r"src\tools\prompts\search-query-formation-prompt.txt", "r") as file:
         query_formation_prompt_template = file.read()
 
     query_parser = JsonOutputParser(pydantic_object=BingSearchQuery)
@@ -76,7 +76,7 @@ def bing_search(search_query: str) -> Dict:
     agent_executor = AgentExecutor(
         agent=agent,
         tools=tools,
-        verbose=True,
+        verbose=False,
     )
     results = agent_executor.invoke({"input": search_query})
     return results
@@ -91,7 +91,7 @@ def get_art_price_range(search_results: Dict) -> Dict:
         minimum_price: float = Field(description="Estimated minimum price of the artwork in USD.")
         maximum_price: float = Field(description="Estimated maximum price of the artwork in USD.")
     parser = JsonOutputParser(pydantic_object=Artprice)
-    with open(r"prompts/final-bing-search-prompt.txt", "r") as file:
+    with open(r"src\tools\prompts\final-bing-search-prompt.txt", "r") as file:
         system_prompt_template = file.read()
     llm = AzureChatOpenAI(
         openai_api_key=os.environ["AZURE_OPENAI_API_KEY"],
@@ -120,15 +120,27 @@ def estimate_art_price_range(image_description: str):
         image_description (str): Raw JSON string describing the artwork.
         
     Returns:
-        dict: Result containing reasoning, min/max INR price, plus the search query/result for traceability.
+        str: Result containing reasoning, min/max INR price, plus the search query/result for traceability.
     """
+    print(image_description)
     search_query = generate_search_query(image_description)
     search_result = bing_search(search_query)
     final_results = get_art_price_range(search_results=search_result)
-    print(final_results)
-    return final_results
+    minimum_price = final_results.get("minimum_price", 0)
+    maximum_price = final_results.get("maximum_price", 0)
+    if "$" not in str(minimum_price):
+        minimum_price = f"${minimum_price}"
+    if "$" not in str(maximum_price):
+        maximum_price = f"${maximum_price}"
+    results = "Price range: " + str(minimum_price) + " - " + str(maximum_price) + "\n"
+    results += "Reasoning: " + str(final_results.get("reasoning", "")) + "\n"
+    return results
 
-result = estimate_art_price_range("a diamond ring with a blue sapphire")
+# result = estimate_art_price_range("a diamond ring with a blue sapphire")
+# result = ', '.join(f'{k}: {v}' for k, v in result.items())
+# print(result)
+# print(type(result))
+
 # if __name__ == "__main__":
 #     """
 #     Main execution block: Reads art description from file, estimates artwork price range.

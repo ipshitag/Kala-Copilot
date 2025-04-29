@@ -95,17 +95,18 @@
 <div class="step-container">
   <!-- Image Section -->
   <div class="image-container">
-    <h2>Step 5: Pricing Agent</h2>
+    <h2>Smart Suggestions from the Pricing Agent</h2>
+    <h7>Our Pricing Agent digs into trends and data to help suggest a fair, competitive price for your product.</h7>
     <img src="{{ blob_url }}" alt="Uploaded image" />
     <a href="{{ url_for('upload') }}" class="btn btn-secondary mt-3">Upload a different image</a>
   </div>
   <!-- Description Section -->
   <div class="description-container">
     <div class="mb-4">
-      <h2>SEO Result</h2>
+      <!-- <h2>SEO Result</h2>
       <div class="border p-2 rounded bg-light">
         <em>{{ seo_result }}</em>
-      </div>
+      </div> -->
     </div>
     <div id="result">
       <!-- Placeholder for generated pricing -->
@@ -155,7 +156,7 @@
         hideLoader();
         if (data.error) throw data.error;
         document.getElementById("result").innerHTML =
-          `<p><strong>Pricing Suggestion:</strong> ${data.pricing_copy}</p>`;
+          `<p><strong>Pricing Suggestion:</strong> ${data.pricing_agent_result}</p>`;
         if (!isFeedback) {
           document.getElementById("btn-generate").style.display = "none";
           document.getElementById("feedback-section").style.display = "block";

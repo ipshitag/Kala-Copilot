@@ -10,13 +10,57 @@ import requests
 # Load environment variables from .env file
 load_dotenv()
 
-PROMPT = """
+
+
+# Twitter API credentials
+API_KEY = os.getenv("API_KEY")
+API_SECRET = os.getenv("API_SECRET")
+ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
+ACCESS_SECRET = os.getenv("ACCESS_SECRET")
+
+# Cosmos DB credentials
+COSMOS_ENDPOINT = os.getenv("COSMOS_DB_ENDPOINT")
+COSMOS_KEY = os.getenv("COSMOS_DB_KEY")
+DATABASE_NAME = os.getenv("DATABASE_NAME")
+CONTAINER_NAME = os.getenv("CONTAINER_NAME")
+
+# Azure OpenAI credentials
+AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
+AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
+DEPLOYMENT_NAME = os.getenv("AZURE_OPENAI_DEPLOYMENT")
+AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION")
+
+def generate_marketing_post(product_data: str, image_path=None):
+    """
+    Generate a marketing post using Azure OpenAI.
+    """
+    try:
+        # Extract all relevant product data fields
+        product_name = product_data.get("productName", "Unknown Product")
+        product_description = product_data.get("productDescription", "No description available.")
+        marketing_copy = product_data.get("marketingCopy", "No marketing copy available.")
+        price = product_data.get("price", "N/A")
+        category = product_data.get("category", "Uncategorized")
+        image_url = product_data.get("imageUrl", None)
+
+        # If image_url is provided, download the image
+        if image_url and not image_path:
+            response = requests.get(image_url)
+            if response.status_code == 200:
+                image_path = "temp_image.jpg"
+                with open(image_path, "wb") as image_file:
+                    image_file.write(response.content)
+                print(f"✅ Image downloaded successfully from URL: {image_url}")
+            else:
+                print(f"❌ Failed to download image from URL: {image_url}. Status code: {response.status_code}")
+
+        PROMPT = """
 You are an agent responsible for crafting social media posts that highlight local artisans and their creations. For each product, you will draft an engaging and informative post suitable for **Twitter** (maximum 280 characters). The goal is to captivate potential buyers by sharing the story behind the product, its craftsmanship, and its cultural significance.
 
 ### **Instructions:**
 
 1. **Analyze the Product Data**:
-   - Use the **product name**, **description**, **marketing copy**, and any relevant details to highlight the uniqueness and craftsmanship of the item.
+   - Use the **product name**, **description**, **marketing copy**, **price** and any relevant details to highlight the uniqueness and craftsmanship of the item. Prices are in dollars.
    - Emphasize **cultural heritage**, **traditional craftsmanship**, and the **story** behind the product.
    - Keep the tone **engaging**, **informal**, and **inspirational** to make the audience feel connected to the artisan's work.
 
@@ -51,49 +95,7 @@ You are an agent responsible for crafting social media posts that highlight loca
 ### **Example Output** (for Twitter):
 "Step into the vibrant world of Warli art 🌿✨! This authentic painting from Maharashtra captures the essence of community life in stunning white-on-brown. A grand tree, joyful dances, and nature’s embrace all in one frame. Bring heritage to your home today! #WarliArt #TraditionalCraft"
 """
-
-# Twitter API credentials
-API_KEY = os.getenv("API_KEY")
-API_SECRET = os.getenv("API_SECRET")
-ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
-ACCESS_SECRET = os.getenv("ACCESS_SECRET")
-
-# Cosmos DB credentials
-COSMOS_ENDPOINT = os.getenv("COSMOS_DB_ENDPOINT")
-COSMOS_KEY = os.getenv("COSMOS_DB_KEY")
-DATABASE_NAME = os.getenv("DATABASE_NAME")
-CONTAINER_NAME = os.getenv("CONTAINER_NAME")
-
-# Azure OpenAI credentials
-AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
-AZURE_OPENAI_KEY = os.getenv("AZURE_OPENAI_KEY")
-DEPLOYMENT_NAME = os.getenv("AZURE_OPENAI_DEPLOYMENT")
-AZURE_OPENAI_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION")
-
-def generate_marketing_post(product_data, image_path=None):
-    """
-    Generate a marketing post using Azure OpenAI.
-    """
-    try:
-        # Extract all relevant product data fields
-        product_name = product_data.get("productName", "Unknown Product")
-        product_description = product_data.get("productDescription", "No description available.")
-        marketing_copy = product_data.get("marketingCopy", "No marketing copy available.")
-        price = product_data.get("price", "N/A")
-        category = product_data.get("category", "Uncategorized")
-        image_url = product_data.get("imageUrl", None)
-
-        # If image_url is provided, download the image
-        if image_url and not image_path:
-            response = requests.get(image_url)
-            if response.status_code == 200:
-                image_path = "temp_image.jpg"
-                with open(image_path, "wb") as image_file:
-                    image_file.write(response.content)
-                print(f"✅ Image downloaded successfully from URL: {image_url}")
-            else:
-                print(f"❌ Failed to download image from URL: {image_url}. Status code: {response.status_code}")
-
+        
         # Format the product data into a string for the prompt
         prompt_with_data = PROMPT.format(product_data=json.dumps({
             "productName": product_name,
@@ -133,9 +135,15 @@ def generate_marketing_post(product_data, image_path=None):
         return None
 
 
-def post_tweet_with_product(product_id):
+def post_tweet_with_product(product_id: str) -> str:
     """
     Fetch product data from Cosmos DB, generate a marketing post, and post it to Twitter.
+    
+    Args:
+        product_id (str): Product id of the product to be posted.
+        
+    Returns:
+        str: Status result of the tweet posting.
     """
     try:
         # Initialize Cosmos DB client
@@ -145,6 +153,7 @@ def post_tweet_with_product(product_id):
 
         # Fetch product data from Cosmos DB
         product_data = container.read_item(item=product_id, partition_key=product_id)
+        print(product_data)
         print(f"✅ Product data retrieved successfully for Product ID: {product_id}")
     except exceptions.CosmosResourceNotFoundError:
         print(f"❌ Product with ID {product_id} not found in Cosmos DB.")
@@ -211,7 +220,7 @@ def post_tweet_with_product(product_id):
     except Exception as e:
         print(f"❌ Error posting tweet: {e}")
 
-# Example usage
-if __name__ == "__main__":
-    product_id = "612ddf36-0207-4bd4-9d0a-18e5644de47f"  # Replace with the actual product ID
-    post_tweet_with_product(product_id)
+# # Example usage
+# if __name__ == "__main__":
+#     product_id = "612ddf36-0207-4bd4-9d0a-18e5644de47f"  # Replace with the actual product ID
+#     post_tweet_with_product(product_id)

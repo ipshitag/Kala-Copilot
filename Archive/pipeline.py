@@ -1,7 +1,7 @@
 import os
 import asyncio
 from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
-from src.tools.azure_agent_wrapper import branding_agent, cataloger_agent, onboarding_agent,visual_insight_agent,seo_agent,user_proxy,planning_agent,selector_prompt
+from src.tools.azure_agent_wrapper import branding_agent, cataloger_agent, onboarding_agent,visual_insight_agent,seo_agent,user_proxy,planning_agent,selector_prompt,pricing_agent
 from src.tools.agent_tools import image_describing_tool
 from utils.llm_config import config_list
 import asyncio

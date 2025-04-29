@@ -12,12 +12,14 @@ from src.tools.azure_agent_wrapper import (
     onboarding_agent,
     visual_insight_agent,
     pricing_agent,
+    posting_agent,
     seo_agent,
     user_proxy,
     planning_agent,
     selector_prompt,
 )
 from src.tools.agent_tools import image_describing_tool
+from src.tools.bing_search_tool import estimate_art_price_range
 
 # ---- Azure Blob Storage Setup ----
 from azure.storage.blob import BlobServiceClient
@@ -255,20 +257,21 @@ def generate_price():
     if not image_description:
         return jsonify({"error": "No image description in session."}), 400
     try:
-        price_cmd = "Get the pricing based on the following description: {}"
+        price_cmd = f"Get the pricing based on the following description: {image_description}"
         if feedback:  # If there's feedback, include it
             price_cmd += f"\n\nFeedback: {feedback}"
-        pricing_agent_res = asyncio.run(
-            run_agent(
-                agent=pricing_agent,
-                task_template=price_cmd,
-                message_source="pricing_agent",
-                input_text=image_description
-            )
-        )
-        print(pricing_agent_res)
+        price_res = estimate_art_price_range(image_description)
+        # pricing_agent_res = asyncio.run(
+        #     run_agent(
+        #         agent=pricing_agent,
+        #         task_template=price_cmd,
+        #         message_source="pricing_agent",
+        #         input_text=image_description
+        #     ))
+        pricing_agent_res = price_res
+        # print(pricing_agent_res)
         session["pricing_agent_result"] = pricing_agent_res
-        return jsonify({"pricing_copy": pricing_agent_res})
+        return jsonify({"pricing_agent_result": pricing_agent_res})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -297,6 +300,7 @@ def generate_catalog():
     try:
         catalog_cmd = "Create a product catalog entry based on the following copy: {}"
         catalog_cmd += f"\n\nPricing: {price_result}"
+        print(catalog_cmd)
         if feedback:  # Add feedback to the command if present
             catalog_cmd += f"\n\nFeedback: {feedback}"
         catalog_cmd = catalog_cmd + f"\n\nImage URL: {blob_url}"
@@ -331,6 +335,31 @@ def final():
         pricing_agent_result=session.get("pricing_agent_result", ""),
         cataloger_agent_result=session.get("cataloger_agent_result", "")
     )
+
+# -------------------------------
+# STEP 7: POSTING AGENT
+# -------------------------------
+
+@app.route("/postImage", methods=["GET"])
+def generate_post():
+    cataloger_agent_result = session.get("cataloger_agent_result")
+    blob_url = session.get("image_blob_url", "")
+    if not cataloger_agent_result:
+        return jsonify({"error": "No SEO result in session."}), 400
+    try:
+        post_cmd = "Create a insta post of the following product: {}"
+        post_result = asyncio.run(
+            run_agent(
+                agent=posting_agent,
+                task_template=post_cmd,
+                message_source="post_update",
+                input_text=cataloger_agent_result
+            )
+        )
+        session["post_result"] = post_result
+        return jsonify({"post_result": post_result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -20,7 +20,7 @@
 </style>
 <div class="container">
   <div class="content-section">
-    <h2>Final Output</h2>
+    <h2>Final Review: Almost There! One Last Look</h2>
   </div>
   {% if blob_url %}
     <div class="content-section">
@@ -40,13 +40,44 @@
     <p><strong>SEO Agent Result (Step 4):</strong> {{ seo_agent_result }}</p>
   </div>
   <div class="content-section">
+    <p><strong>Pricing Agent Result (Step 4):</strong> {{ pricing_agent_result }}</p>
+  </div>
+  <div class="content-section">
     <p><strong>Cataloger Agent Result (Step 5):</strong> {{ cataloger_agent_result }}</p>
+  </div>
+  <div class="content-section">
+    <button id="post-button" class="btn btn-purple">Post</button>
   </div>
   <div class="content-section">
     <a href="{{ url_for('index') }}" class="btn btn-purple" id="go-home">Go Home</a>
   </div>
 </div>
 <script>
+document.getElementById('post-button').addEventListener('click', async function() {
+  try {
+    const response = await fetch('/postImage', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data.post_result) {
+        alert('Post generated successfully: ' + data.post_result);
+      } else {
+        alert('Error: ' + data.error);
+      }
+    } else {
+      alert('Failed to generate post.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred while generating the post.');
+  }
+});
+
 document.getElementById('go-home').addEventListener('click', function(e) {
   document.body.classList.add('fade-out');
   setTimeout(function() {
