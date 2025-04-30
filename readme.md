@@ -206,11 +206,7 @@ Kálā Copilot uses a **Multi Agent Handoff Orchestration** where agents process
 - Each agent can handle errors and retry independently.  
 - Orchestration is managed by Microsoft Autogen, supporting flexible, scalable agent pipelines.
 
-<p align="center">
-  <img src="https://github.com/ipshitag/Retail-Copilot-Hackathon/blob/main/assets/bannerImages/agent-workflow.png" 
-       alt="Agent workflow diagram" 
-       width="300" />
-</p>
+![Flow Diagram](https://github.com/ipshitag/Retail-Copilot-Hackathon/blob/main/assets/ReadmeImages/Hand_off_Flow_diagram.png)
 
 ---
 
