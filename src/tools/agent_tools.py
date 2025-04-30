@@ -287,8 +287,3 @@ def fetch_user_data(user_id: str) -> dict:
     userForte = user_data.get("userForte", "No description available.")
     res = "User Name: {}, User Forte: {}".format(user_name, userForte)
     return res
-
-
-# path = "https://staidemodev.blob.core.windows.net/retail-copilot/image1.jpg"
-# res = image_describing_tool(path)
-# print(res)
