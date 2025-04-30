@@ -106,9 +106,6 @@ def get_art_price_range(search_results: Dict) -> Dict:
     )
     chain = prompt | llm | parser
     results = chain.invoke({"search_results": json.dumps(search_results)})
-    # dollar_exchange_rate = 85
-    # results['minimum_price'] = round(results.get("minimum_price", 0)/dollar_exchange_rate, 0)
-    # results['maximum_price'] = round(results.get("maximum_price", 0)/dollar_exchange_rate, 0)
     return results
 
 def estimate_art_price_range(image_description: str):
@@ -135,18 +132,3 @@ def estimate_art_price_range(image_description: str):
     results = "Price range: " + str(minimum_price) + " - " + str(maximum_price) + "\n"
     results += "Reasoning: " + str(final_results.get("reasoning", "")) + "\n"
     return results
-
-# result = estimate_art_price_range("a diamond ring with a blue sapphire")
-# result = ', '.join(f'{k}: {v}' for k, v in result.items())
-# print(result)
-# print(type(result))
-
-# if __name__ == "__main__":
-#     """
-#     Main execution block: Reads art description from file, estimates artwork price range.
-#     """
-#     with open(r"example_delete_later\search-input.json", "r") as file:
-#         image_description = file.read()
-#     result = estimate_art_price_range(image_description)
-#     print("\n---- RESULT ----\n")
-#     print(json.dumps(result, indent=2))
