@@ -8,8 +8,11 @@ from azure.ai.projects.models import FunctionTool, ToolSet, MessageTextContent
 from azure.core.exceptions import HttpResponseError
 from agent_tools import (
     image_describing_tool,
-    campaign_generation_tool
+    campaign_generation_tool,
+    add_users_to_cosmos,
+    add_product_to_cosmos
 )
+from bing_search_tool import estimate_art_price_range
 
 from dotenv import load_dotenv
 
@@ -23,26 +26,26 @@ project_connection_string = os.getenv("AZURE_AI_FOUNDRY_CONNECTION_STRING")
 project_client = AIProjectClient.from_connection_string(
     conn_str=project_connection_string, credential=DefaultAzureCredential())
 
-file_path = r"src\tools\prompts\BrandingAgent.txt"
+file_path = r"src/tools/prompts/PricingAgentPrompt.txt"
 file_path = Path(file_path)
 
 with file_path.open("r", encoding="utf-8", errors="ignore") as file:
             instructions = file.read()
 
-visual_insight_functions_tool = FunctionTool(
+pricing_functions_tool = FunctionTool(
     {
-        image_describing_tool
+        add_product_to_cosmos
     }
 )
 
-visual_insight_functions_toolset = ToolSet()
-visual_insight_functions_toolset.add(visual_insight_functions_tool)
+pricing_functions_toolset = ToolSet()
+pricing_functions_toolset.add(pricing_functions_tool)
 
 agent = project_client.agents.create_agent(
             model=deployment_name,
-            name="Visual Insights Agent",
+            name="Pricing Agent",
             instructions=instructions,
-            # toolset=visual_insight_functions_toolset,
+            toolset=pricing_functions_toolset,
             temperature=0.5,
             headers={"x-ms-enable-preview": "true"},
         )

@@ -73,7 +73,7 @@ You are an agent responsible for crafting social media posts that highlight loca
    - **Introduction**: A short, compelling statement that grabs attention.
    - **Middle**: A brief mention of the key features (product description) and what makes the piece unique.
    - **Closing**: A call-to-action or invitation to learn more/purchase the item.
-   - Use **hashtags** like #HandmadeArt, #TraditionalCraft, #ArtisansOfInstagram, #LocalCrafts, or specific ones related to the craft.
+   - Use **hashtags** like #HandmadeArt, #TraditionalCraft, #LocalCrafts, or specific ones related to the craft.
 
 4. **Example Output**:
    - **For an Art Piece (like a painting)**: 
@@ -143,7 +143,7 @@ def post_tweet_with_product(product_id: str) -> str:
         product_id (str): Product id of the product to be posted.
         
     Returns:
-        str: Status result of the tweet posting.
+        str: Status result of the tweet posting. 
     """
     try:
         # Initialize Cosmos DB client

@@ -21,7 +21,7 @@ def record_and_transcribe(stop_event: threading.Event) -> str:
     """
     Same as your old function, but returns "" immediately if stop_event is set.
     """
-    cobra = pvcobra.create(access_key="KFgQP1ckC6l64TJ61gWrPaCeh5Es7lsTTD4f1Jg1QaOTSrelnx+iow==")
+    cobra = pvcobra.create(access_key="8DEAG+UKJZshzKiU3Y6QfxDeapyIZJHHhjo2Af34e6VXSo46M9I7hQ==")
     FORMAT, CHANNELS, RATE, FRAMES_PER_BUFFER = pyaudio.paInt16, 1, 16000, 512
     audio = pyaudio.PyAudio()
     stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE,
@@ -71,7 +71,7 @@ ttk.Style().configure("TLabel", background=BG, foreground=FG)
 title_lbl = ttk.Label(root, text="Kala Copilot", font=("Segoe UI", 18, "bold"))
 title_lbl.place(x=20, y=15)
 
-msg_lbl = ttk.Label(root, text="Press  Start  to begin …",
+msg_lbl = ttk.Label(root, text="Kala Copilot Onboarding Process",
                     font=("Segoe UI", 32, "bold"),
                     anchor="center", justify="center",
                     wraplength=root.winfo_screenwidth() - 100)

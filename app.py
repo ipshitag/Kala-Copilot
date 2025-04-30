@@ -3,6 +3,7 @@ import asyncio
 from uuid import uuid4
 import json
 from flask import Flask, request, session, render_template, redirect, url_for, jsonify
+from src.tools.agent_tools import fetch_user_data
 from PIL import Image
 
 # Import your custom modules
@@ -39,7 +40,7 @@ def upload_image_to_blob(file_obj, filename):
 
 # ---- Flask App ----
 app = Flask(__name__)
-# app.secret_key = "some_secret_key_for_demo"
+app.secret_key = "some_secret_key_for_demo"
 
 async def run_agent(agent, task_template, message_source, input_text):
     task = task_template.format(input_text)
@@ -55,6 +56,15 @@ async def run_agent(agent, task_template, message_source, input_text):
 @app.route("/")
 def index():
     return render_template("index.html")
+
+# -------------------------------
+# USERNAME
+# -------------------------------
+@app.route('/set_username', methods=['POST'])
+def set_username():
+    username = request.form['username']
+    session['username'] = username
+    return redirect(url_for('upload'))
 
 # -------------------------------
 # STEP 0: UPLOAD
@@ -162,24 +172,31 @@ def generate_insight():
 @app.route("/step3", methods=["GET"])
 def step3():
     blob_url = session.get("image_blob_url")
+    username = session.get("username")
     if "visual_agent_result" not in session:
         return redirect(url_for("step2"))
     return render_template(
         "step3.html",
-        visual_agent_result=session["visual_agent_result"],blob_url=blob_url
+        visual_agent_result=session["visual_agent_result"],
+        blob_url=blob_url,
+        username=username,
     )
 
 @app.route("/generate_branding", methods=["POST"])
 def generate_branding():
     blob_url = session.get("image_blob_url")
+    username = session.get("username")
     visual_result = session.get("visual_agent_result")
     data = request.get_json()
+    user_data = fetch_user_data(username)
     feedback = data.get("feedback", "")
     is_feedback = data.get("isFeedback", False)  # Indicator if this is a feedback regeneration or not
     if not visual_result:
         return jsonify({"error": "No visual agent result found in session."}), 400
     try:
         marketing_cmd = "Based on this product description, create a marketing ad copy: {}"
+        if user_data:
+            marketing_cmd += f"\n\nUser Data: {user_data}"
         if is_feedback and feedback:  # Modify text based on if feedback is present and this is a regeneration
             marketing_cmd += f"\n\nFeedback: {feedback}"
         branding_result = asyncio.run(
@@ -347,7 +364,7 @@ def generate_post():
     if not cataloger_agent_result:
         return jsonify({"error": "No SEO result in session."}), 400
     try:
-        post_cmd = "Create a insta post of the following product: {}"
+        post_cmd = "Create a twitter post of the following product: {}"
         post_result = asyncio.run(
             run_agent(
                 agent=posting_agent,

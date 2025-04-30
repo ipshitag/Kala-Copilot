@@ -21,6 +21,11 @@ cc_key = os.environ.get("COSMOS_DB_KEY")
 cc_client = CosmosClient(cc_endpoint, cc_key)
 # Define database and container names
 cc_database_name = "retail-copilot"
+# Cosmos DB credentials
+COSMOS_ENDPOINT = os.getenv("COSMOS_DB_ENDPOINT")
+COSMOS_KEY = os.getenv("COSMOS_DB_KEY")
+DATABASE_NAME = os.getenv("DATABASE_NAME")
+CONTAINER_NAME = "users"
 
 az_model_client = AzureOpenAI(
     azure_deployment="gpt-4o",
@@ -270,6 +275,19 @@ def add_users_to_cosmos(
         "userID": user_id,
         "message": "Product successfully added!"
     })
+
+def fetch_user_data(user_id: str) -> dict:
+    cosmos_client = CosmosClient(COSMOS_ENDPOINT, credential=COSMOS_KEY)
+    database = cosmos_client.get_database_client(DATABASE_NAME)
+    container = database.get_container_client(CONTAINER_NAME)
+
+    # Fetch product data from Cosmos DB
+    user_data = container.read_item(item=user_id, partition_key=user_id)
+    user_name = user_data.get("userName")
+    userForte = user_data.get("userForte", "No description available.")
+    res = "User Name: {}, User Forte: {}".format(user_name, userForte)
+    return res
+
 
 # path = "https://staidemodev.blob.core.windows.net/retail-copilot/image1.jpg"
 # res = image_describing_tool(path)

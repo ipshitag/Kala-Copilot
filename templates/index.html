@@ -11,10 +11,13 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    width: 150vh;
+    width: 100%;
   }
   .image-container {
     margin-bottom: 20px;
+  }
+  .form-group {
+    text-align: center;
   }
 </style>
 <div class="container">
@@ -22,7 +25,14 @@
     <img src="https://i.ibb.co/Gf2Lg1S5/Punjabi-Phulkari-imresizer.jpg" alt="Punjabi Phulkari" style="max-width: 100%; height: auto;">
   </div>
   <h1 class="text-center mb-4">Welcome to Kala Copilot</h1>
-  <div class="text-center">
+  <form id="username-form" action="{{ url_for('set_username') }}" method="POST">
+    <div class="form-group">
+      <label for="username" class="d-block">Enter Your Username:</label>
+      <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    <button type="submit" class="btn btn-purple btn-lg mt-3">Submit</button>
+  </form>
+  <div class="text-center mt-3">
     <a href="{{ url_for('upload') }}" class="btn btn-purple btn-lg" id="start-upload">Start by Uploading an Image</a>
   </div>
 </div>
