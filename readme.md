@@ -258,7 +258,7 @@ python src.tools.main_gui.py
 python app.py
 ```
 
-##### Prerequisites
+#### Prerequisites
 
 Before running the above make sure you have _hydrated_ the .env file (follow env-sample) to do the same and installed the requirements file.
 
