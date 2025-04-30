@@ -219,8 +219,3 @@ def post_tweet_with_product(product_id: str) -> str:
             print(f"❌ Failed to post tweet. Status code: {response.status_code}. Response: {response.text}")
     except Exception as e:
         print(f"❌ Error posting tweet: {e}")
-
-# # Example usage
-# if __name__ == "__main__":
-#     product_id = "612ddf36-0207-4bd4-9d0a-18e5644de47f"  # Replace with the actual product ID
-#     post_tweet_with_product(product_id)
