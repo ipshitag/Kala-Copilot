@@ -278,13 +278,13 @@ def generate_price():
         if feedback:  # If there's feedback, include it
             price_cmd += f"\n\nFeedback: {feedback}"
         price_res = estimate_art_price_range(image_description)
-        # pricing_agent_res = asyncio.run(
-        #     run_agent(
-        #         agent=pricing_agent,
-        #         task_template=price_cmd,
-        #         message_source="pricing_agent",
-        #         input_text=image_description
-        #     ))
+        pricing_agent_res = asyncio.run(
+            run_agent(
+                agent=pricing_agent,
+                task_template=price_cmd,
+                message_source="pricing_agent",
+                input_text=image_description
+            ))
         pricing_agent_res = price_res
         # print(pricing_agent_res)
         session["pricing_agent_result"] = pricing_agent_res
