@@ -199,7 +199,7 @@ The system operates in two main phases: **User Onboarding** and **Operational Wo
 ---
 
 ### 5.3 Agent Orchestration Model
-Kálā Copilot uses a **chain-based orchestration** where agents process tasks in sequence:
+Kálā Copilot uses a **Multi Agent Handoff Orchestration** where agents process tasks in sequence:
 - Each agent passes data to the next, ensuring simple handoffs.  
 - Modular design allows adding/removing agents without breaking the entire flow.  
 - Each agent can handle errors and retry independently.  
@@ -242,6 +242,30 @@ Below are some key highlights that ensure solution quality:
   Strict access policies and schema validation ensure only authorized processes handle sensitive data.  
 - **Resilient Independent Agents**  
   A failure in one area doesn’t derail the entire workflow.
+
+### 5.6 How to Run
+
+By following the given steps you can setup the application in your system,
+
+#### Onboarding Process
+```
+python src.tools.main_gui.py
+```
+
+#### Web Application
+```
+python app.py
+```
+
+##### Prerequisites
+
+Before running the above make sure you have _hydrated_ the .env file (follow env-sample) to do the same and installed the requirements file.
+
+```
+python -m venv .venv
+.venv/Scripts/activate
+pip install -r requirements.txt
+```
 
 ---
 

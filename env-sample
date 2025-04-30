@@ -1,0 +1,54 @@
+# Sample .env file for Retail Copilot Hackathon
+# Replace the placeholder values with your actual credentials and configuration details.
+
+# Azure OpenAI Configuration
+AZURE_OPENAI_DEPLOYMENT=
+AZURE_OPENAI_API_VERSION=
+AZURE_OPENAI_ENDPOINT=
+AZURE_OPENAI_KEY=
+
+# Cohere API Key
+COHERE_API_KEY=
+
+# PVCobra Access Token
+PVCOBRA_ACCESS_TOKEN=
+
+# Azure AI Foundry Connection String
+AZURE_AI_FOUNDRY_CONNECTION_STRING=
+BING_CONNECTION_NAME=
+
+# Cosmos DB Configuration
+COSMOS_DB_ENDPOINT=
+COSMOS_DB_KEY=
+DATABASE_NAME=
+CONTAINER_NAME=
+
+# Agents IDs
+VisualInsightAgent=
+MarketingBrandingAgent=
+SEOAgent=
+
+# Twitter API Credentials
+API_KEY=
+API_SECRET=
+ACCESS_TOKEN=
+ACCESS_SECRET=
+
+# Azure Whisper Configuration
+AZURE_WHISPER_ENDPOINT=
+AZURE_WHISPER_KEY=
+
+# Azure TTS Model Configuration
+AZURE_TTS_ENDPOINT=
+AZRE_TTS_SERVICE_NAME=
+AZURE_TTS_KEY=
+AZURE_TTS_LOCATION=
+
+# Bing Search Configuration
+AZURE_BING_SERVICE_NAME=
+AZURE_BING_ENDPOINT=
+AZURE_BING_KEY=
+
+# Azure Storage Configuration
+AZURE_STORAGE_CONNECTION_STRING=
+AZURE_CONTAINER_NAME=
