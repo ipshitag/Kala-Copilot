@@ -172,7 +172,7 @@ Here’s a quick snapshot of the specialized agents:
 |------------------------|---------------------------------------------------------------------|--------------------------------|
 | Onboarding Agent       | Welcomes user, captures details, stores profile                     | Azure Speech, OpenAI, CosmosDB |
 | Visual Insight Agent   | Analyzes product images                                             | Azure OpenAI Vision            |
-| Marketing Agent        | Generates copy, ads, hashtags                                       | Azure OpenAI                   |
+| Marketing Agent        | Generates copy, ads, hashtags                                       | Azure OpenAI, CosmosDB         |
 | SEO Agent              | Optimizes text for relevant searches                                | Azure OpenAI                   |
 | Pricing Agent          | Recommends fair, market-aligned prices                              | Bing Search Tool               |
 | Cataloger Agent        | Stores product data in CosmosDB                                     | CosmosDB                       |
