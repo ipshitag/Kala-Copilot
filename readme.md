@@ -23,9 +23,10 @@
       1. [User Onboarding](#521-user-onboarding)  
       2. [Product Upload Pipeline](#522-product-upload-pipeline)  
    3. [Agent Orchestration Model](#53-agent-orchestration-model)  
-   4. [Technology Stack](#54-technology-stack)  
-   5. [Solution Quality Highlights](#55-solution-quality-highlights)  
-   6. [Future Enhancements](#56-future-enhancements)  
+   4. [Technology Stack](#54-technology-stack)
+   5. [Run Instructions](#56-how-to-run)  
+   6. [Solution Quality Highlights](#55-solution-quality-highlights)  
+   7. [Future Enhancements](#56-future-enhancements)  
 7. [Inspiration & Team 🚀](#6-inspiration--team-)
 
 ---
@@ -269,7 +270,7 @@ pip install -r requirements.txt
 
 ---
 
-### 5.6 Future Enhancements
+### 5.7 Future Enhancements
 Potential future enhancements are described below:
 
 <details>
