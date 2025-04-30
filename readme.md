@@ -79,7 +79,7 @@ At its core, the solution is driven by **seven collaborative AI agents**, each p
    - Examines product photos for color, material, patterns, etc.  
    - Provides refined tags for accurate listings.
 
-3. **Branding/Marketing Agent**  
+3. **Branding Agent**  
    - Creates product names, marketing messages, descriptions, and hashtags.  
    - Adapts style to each platform (e.g., Etsy, Instagram, Meesho).
 
@@ -172,9 +172,9 @@ Here’s a quick snapshot of the specialized agents:
 |------------------------|---------------------------------------------------------------------|--------------------------------|
 | Onboarding Agent       | Welcomes user, captures details, stores profile                     | Azure Speech, OpenAI, CosmosDB |
 | Visual Insight Agent   | Analyzes product images                                             | Azure OpenAI Vision            |
-| Marketing Agent        | Generates copy, ads, hashtags                                       | Azure OpenAI, CosmosDB         |
+| Branding Agent         | Generates copy, ads, hashtags                                       | Azure OpenAI, CosmosDB         |
 | SEO Agent              | Optimizes text for relevant searches                                | Azure OpenAI                   |
-| Pricing Agent          | Recommends fair, market-aligned prices                              | Bing Search Tool               |
+| Smart Pricing Agent    | Recommends fair, market-aligned prices                              | Bing Search Tool               |
 | Cataloger Agent        | Stores product data in CosmosDB                                     | CosmosDB                       |
 | Posting Agent          | Publishes final content                                             | Twitter API, CosmosDB          |
 
@@ -191,9 +191,9 @@ The system operates in two main phases: **User Onboarding** and **Operational Wo
 #### 5.2.2 Product Upload Pipeline
 1. The user uploads a product image.  
 2. Visual Insight Agent refines image data.  
-3. Marketing Agent drafts the product name, description, and hashtags.  
+3. Branding Agent drafts the product name, description, and hashtags.  
 4. SEO Agent applies search-friendly keywords.  
-5. Pricing Agent checks competitor data to suggest pricing.  
+5. Smart Pricing Agent checks competitor data to suggest pricing.  
 6. Cataloger Agent organizes and secures all final product info.  
 7. Posting Agent compiles everything for a frictionless publish.
 
@@ -227,7 +227,7 @@ Kálā Copilot uses a **Multi Agent Handoff Orchestration** where agents process
 | Azure Speech Service       | Enables voice-based onboarding                          |
 | Azure Storage              | Saves uploaded data                                     |
 | Twitter API                | Publishes marketing content                             |
-| GitHub Copilot             | Some help here and there  👀 |
+| GitHub Copilot             | Some help here and there  👀                            |
 
 ---
 
