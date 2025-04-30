@@ -244,6 +244,3 @@ if __name__=="__main__":
         input_text=conv_history
     )
 )
-
-#    with open(r"example_delete_later\conversation_history.txt", "w", encoding="utf-8") as file:
-#     file.write(conv_history)
