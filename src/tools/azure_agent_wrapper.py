@@ -285,6 +285,7 @@ branding_agent = AssistantAgent(
     name="branding_agent",
     description="An agent that has specialized knowledge in creating marketing ad copy.",
     model_client=az_model_client,
+    tools=[branding_marketing_agent],
     system_message=branding_instructions,
 )
 
@@ -293,6 +294,7 @@ visual_insight_agent = AssistantAgent(
     name="visual_insight_agent",
     description="An agent for creating accurate image descriptions from crude image descriptions.",
     model_client=az_model_client,
+    tools=[image_descriptor_agent],
     system_message=visualizer_instructions,
 )
 
