@@ -45,7 +45,7 @@ Today, **visibility beats quality**.
 And without the right tools, these creators get left out of the global marketplace.
 
 This isn’t just an India problem. It's global—from Southeast Asia to Latin America to rural U.S. towns.  
-**The internet exists—but it doesn’t speak their language.**
+**The internet exists, but it doesn’t speak their language.**
 
 There’s a massive opportunity to unlock creativity, culture, and commerce—at scale—by building tools *for* them, not *against* them.
 
