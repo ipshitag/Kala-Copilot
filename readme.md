@@ -33,7 +33,7 @@
 
 ## 1. Problem
 
-Millions of skilled creators around the world—artisans, craftspeople, small makers—are invisible in the digital economy.
+Millions of skilled creators around the world including artisans, craftspeople, small makers—are invisible in the digital economy.
 
 Not because they lack talent.  
 Because the internet wasn’t built for them.
